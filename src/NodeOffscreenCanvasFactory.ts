@@ -27,6 +27,36 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   }
 
   public convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
+    switch (this.contextId) {
+      case '2d':
+        return this.convertToBlob2D(options);
+
+      case 'webgl':
+        return this.convertToBlobGL(options);
+
+      default:
+        this.invalidContextId();
+    }
+  }
+
+  private async convertToBlob2D(options?: ImageEncodeOptions): Promise<Blob> {
+    const png = 'image/png';
+    const jpeg = 'image/jpeg';
+    let canvas = this.canvas;
+
+    // The default output type is PNG
+    if (!options || options.type === png) {
+      let buffer = canvas.toBuffer(png);
+      return new Blob([buffer], { type: png });
+    } else if (options.type === jpeg) {
+      let buffer = canvas.toBuffer(jpeg, { quality: options.quality });
+      return new Blob([buffer], { type: jpeg });
+    } else {
+      throw new Error('Invalid: ' + options.type);
+    }
+  }
+
+  private convertToBlobGL(options?: ImageEncodeOptions): Promise<Blob> {
     throw new Error('not impl');
   }
 
@@ -55,7 +85,7 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
         return glContext;
 
       default:
-        throw new Error('Only Canvas2D and WebGL are supported');
+        this.invalidContextId();
     }
   }
 
@@ -77,7 +107,11 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
 
   }
 
-  private contextId?: '2d' | 'gl';
+  private invalidContextId(): never {
+    throw new Error('Only Canvas2D and WebGL are supported');
+  }
+
+  private contextId?: '2d' | 'webgl';
   private glContext: WebGLRenderingContext;
   private canvas: Canvas;
   private canvasContext: CanvasRenderingContext2D;
