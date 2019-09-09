@@ -2,25 +2,26 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-// TODO: Move this into its own git repo!!!
-// TODO: Add unit tests
-// TODO: @types/gl
+import { IDisposable } from '@leosingleton/commonlibs';
 
-import * as gl from 'gl';
-
-export function FimNodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas {
+export function FimNodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
   return new NodeOffscreenCanvas(width, height);
 }
 
-class NodeOffscreenCanvas implements OffscreenCanvas {
+class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.context = gl(width, height);
+    this.context = require('gl')(width, height);
   }
 
   public readonly width: number;
   public readonly height: number;
+
+  public dispose(): void {
+    let ext = this.context.getExtension('STACKGL_destroy_context');
+    ext.destroy();
+  }
 
   public convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
     throw new Error('not impl');

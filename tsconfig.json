@@ -6,10 +6,8 @@
     "declaration": true,
     "outDir": "./build/dist",
     "noImplicitAny": true,
-    "sourceMap": true,
-//    "strict": true
-    "esModuleInterop": true
+    "sourceMap": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "samples", "**/__tests__/*"]
+  "exclude": ["node_modules"]
 }

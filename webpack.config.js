@@ -3,6 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 var config = {
+  target: 'node',
   entry: './src/index.ts',
   devtool: 'source-map',
   module: {
@@ -11,15 +12,11 @@ var config = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
-      },
-      {
-        test: /\.glsl$/,
-        use: 'webpack-glsl-minify'
       }
     ]
   },
   resolve: {
-    extensions: [ '.glsl', '.ts' ]
+    extensions: [ '.ts' ]
   },
   externals: [
     '@leosingleton/commonlibs',
