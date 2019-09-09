@@ -5,7 +5,7 @@
 import { IDisposable } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 
-export function FimNodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
+export function NodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
   return new NodeOffscreenCanvas(width, height);
 }
 
