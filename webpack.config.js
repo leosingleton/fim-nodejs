@@ -23,7 +23,9 @@ module.exports = (env, argv) => {
       },
       externals: [
         '@leosingleton/commonlibs',
+        'canvas',
         'gl',
+        'jpeg-js',
         nodeExternals()
       ],
       output: {

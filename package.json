@@ -27,7 +27,8 @@
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",
     "canvas": "^2.6.0",
-    "gl": "^4.4.0"
+    "gl": "^4.4.0",
+    "jpeg-js": "^0.3.6"
   },
   "scripts": {
     "build": "npx webpack --mode=none"

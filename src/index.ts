@@ -4,4 +4,5 @@
  * Released under the MIT license
  */
 
+export { FimCanvasCreator } from './FimCanvasCreator';
 export { NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
