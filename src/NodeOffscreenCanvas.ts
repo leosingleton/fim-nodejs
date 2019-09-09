@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { IDisposable, using } from '@leosingleton/commonlibs';
+import { IDisposable } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 import { FimCanvas } from '@leosingleton/fim';
 
