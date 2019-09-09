@@ -2,8 +2,9 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { IDisposable } from '@leosingleton/commonlibs';
+import { IDisposable, using } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
+import { FimCanvas } from '@leosingleton/fim';
 
 const enum MimeTypes {
   PNG = 'image/png',
@@ -58,7 +59,14 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   }
 
   private convertToBufferGL(options?: ImageEncodeOptions): Promise<Buffer> {
-    throw new Error('not impl');
+    // Just copy the WebGL canvas to a temporary Canvas2D and use its conversion functions
+    let temp = new FimCanvas(this.width, this.height, null, NodeOffscreenCanvasFactory);
+    try {
+      let oc = temp.offscreenCanvas as any as NodeOffscreenCanvas;
+      return oc.convertToBuffer2D(options);
+    } finally {
+      temp.dispose();
+    }
   }
 
   public async convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {

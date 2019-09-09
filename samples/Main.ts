@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimCanvasCreator, NodeOffscreenCanvas } from '../build/dist/index.js';
+import { FimCanvasCreator, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../build/dist/index.js';
 import { FimCanvas, FimGLCanvas } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
@@ -40,6 +40,7 @@ function usage(): void {
 `Usage: node samples.js <operation> <input-file> <output-file>
   operation: one of the following:
     "copy" - Decompresses the input JPEG and recompresses it
+    "gl-fill" - Outputs a red canvas created with a WebGL fill
   input-file: path to read the input JPEG or -- to read from stdin
   output-file: path to write the output JPEG or -- to write to stdout`);
 }
@@ -54,6 +55,10 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
     switch (op) {
       case 'copy':
         outputImage = await copyOperation(inputImage);
+        break;
+
+      case 'gl-fill':
+        outputImage = await glFillOperation(inputImage);
         break;
 
       default:
@@ -74,4 +79,8 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
 
 async function copyOperation(inputImage: FimCanvas): Promise<FimCanvas> {
   return inputImage;
+}
+
+async function glFillOperation(inputImage: FimCanvas): Promise<FimGLCanvas> {
+  return new FimGLCanvas(inputImage.w, inputImage.h, '#00f', NodeOffscreenCanvasFactory);
 }
