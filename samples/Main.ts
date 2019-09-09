@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimNodeOffscreenCanvasFactory } from '../build/dist';
+import { FimNodeOffscreenCanvasFactory } from '../build/dist/index.js';
 import { FimCanvas, FimGLCanvas } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
@@ -38,14 +38,39 @@ export async function main(argv: string[]): Promise<number> {
 function usage(): void {
   process.stderr.write(
 `Usage: node samples.js <operation> <input-file> <output-file>
-  operation: TODO
+  operation: one of the following:
+    "copy" - Decompresses the input JPEG and recompresses it
   input-file: path to read the input JPEG or -- to read from stdin
   output-file: path to write the output JPEG or -- to write to stdout`);
 }
 
 async function processFile(op: string, input: Buffer): Promise<Buffer> {
-  console.log('Length', new Uint8Array(input).length);
-  let inputImage = await FimCanvas.createFromJpeg(new Uint8Array(input));
-  console.log(inputImage.imageDimensions);
-  throw new Error('not implemented');
+  // Parse the input JPEG file
+  let inputImage = await FimCanvas.createFromJpeg(new Uint8Array(input), FimNodeOffscreenCanvasFactory);
+
+  // Perform the requested operation
+  let outputImage: FimCanvas | FimGLCanvas;
+  try {
+    switch (op) {
+      case 'copy':
+        outputImage = await copyOperation(inputImage);
+        break;
+
+      default:
+        return null;
+    }
+
+    // Convert the output to JPEG
+    let jpeg = await outputImage.toJpeg();
+    return Buffer.from(jpeg);
+  } finally {
+    inputImage.dispose();
+    if (outputImage) {
+      outputImage.dispose();
+    }
+  }
+}
+
+async function copyOperation(inputImage: FimCanvas): Promise<FimCanvas> {
+  return inputImage;
 }
