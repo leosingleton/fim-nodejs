@@ -23,6 +23,7 @@ var config = {
   },
   externals: [
     '@leosingleton/commonlibs',
+    '@leosingleton/fim',
     nodeExternals()
   ],
   output: {
