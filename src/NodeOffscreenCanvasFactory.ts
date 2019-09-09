@@ -1,4 +1,4 @@
-// fim-node - Fast Image Manipulation Library for NodeJS
+// fim-nodejs - Fast Image Manipulation Library for NodeJS
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
