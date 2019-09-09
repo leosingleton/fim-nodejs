@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
       },
       externals: [
         '@leosingleton/commonlibs',
-        '@leosingleton/fim',
+        'gl',
         nodeExternals()
       ],
       output: {
@@ -47,6 +47,7 @@ module.exports = (env, argv) => {
       resolve: {
         extensions: [ '.ts' ]
       },
+      externals: [ nodeExternals() ],
       output: {
         path: path.resolve(__dirname, 'build/samples'),
         filename: 'samples.js'

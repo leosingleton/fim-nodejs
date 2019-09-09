@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@leosingleton/fim": "^1.0.0-alpha.19",
+    "@types/get-stdin": "^7.0.0",
     "@types/gl": "^4.1.0",
     "@types/node": "^12.7.3",
     "copy-webpack-plugin": "^5.0.4",
