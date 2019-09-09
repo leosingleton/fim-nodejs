@@ -9,7 +9,7 @@ export function NodeOffscreenCanvasFactory(width: number, height: number): Offsc
   return new NodeOffscreenCanvas(width, height);
 }
 
-class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
+export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
