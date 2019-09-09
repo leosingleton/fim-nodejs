@@ -3,6 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { IDisposable } from '@leosingleton/commonlibs';
+import { createCanvas, Canvas } from 'canvas';
 
 export function FimNodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
   return new NodeOffscreenCanvas(width, height);
@@ -18,8 +19,11 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public readonly height: number;
 
   public dispose(): void {
-    let ext = this.context.getExtension('STACKGL_destroy_context');
-    ext.destroy();
+    let gl = this.glContext;
+    if (gl) {
+      let ext = gl.getExtension('STACKGL_destroy_context');
+      ext.destroy();
+    }
   }
 
   public convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
@@ -27,15 +31,32 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   }
 
   public getContext(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext {
-    if (!this.context) {
-      if (contextId === 'webgl') {
-        this.context = require('gl')(this.width, this.height);
-      } else {
-        throw new Error('Only WebGL is supported');
-      }
+    if (this.contextId && this.contextId !== contextId) {
+      throw new Error('Invalid contextId');
     }
 
-    return this.context;
+    let w = this.width;
+    let h = this.height;
+  
+    switch (contextId) {
+      case '2d':
+        let canvasContext = this.canvasContext;
+        if (!canvasContext) {
+          let canvas = this.canvas = createCanvas(w, h);
+          canvasContext = this.canvasContext = canvas.getContext('2d', options);
+        }
+        return canvasContext as any;
+    
+      case 'webgl':
+        let glContext = this.glContext;
+        if (!glContext) {
+          glContext = this.glContext = require('gl')(w, h);
+        }
+        return glContext;
+
+      default:
+        throw new Error('Only Canvas2D and WebGL are supported');
+    }
   }
 
   public transferToImageBitmap(): ImageBitmap {
@@ -56,5 +77,8 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
 
   }
 
-  private context: WebGLRenderingContext;
+  private contextId?: '2d' | 'gl';
+  private glContext: WebGLRenderingContext;
+  private canvas: Canvas;
+  private canvasContext: CanvasRenderingContext2D;
 }
