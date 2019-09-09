@@ -12,7 +12,6 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.context = require('gl')(width, height);
   }
 
   public readonly width: number;
@@ -28,11 +27,15 @@ class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   }
 
   public getContext(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext {
-    if (contextId === 'webgl') {
-      return this.context;
-    } else {
-      throw new Error('Only WebGL is supported');
+    if (!this.context) {
+      if (contextId === 'webgl') {
+        this.context = require('gl')(this.width, this.height);
+      } else {
+        throw new Error('Only WebGL is supported');
+      }
     }
+
+    return this.context;
   }
 
   public transferToImageBitmap(): ImageBitmap {
