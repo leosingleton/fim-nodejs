@@ -4,6 +4,7 @@
 
 import { IDisposable } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
+import createContext from 'gl';
 import { FimCanvas } from '@leosingleton/fim';
 
 const enum MimeTypes {
@@ -96,7 +97,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
         this.contextId = 'webgl';
         let glContext = this.glContext;
         if (!glContext) {
-          glContext = this.glContext = require('gl')(w, h);
+          glContext = this.glContext = createContext(w, h);
         }
         return glContext;
 
