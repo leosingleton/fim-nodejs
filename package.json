@@ -18,7 +18,8 @@
     "ts-loader": "^6.0.4",
     "typescript": "^3.6.2",
     "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.7",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",

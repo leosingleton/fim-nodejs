@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
 var config = {
@@ -21,7 +22,8 @@ var config = {
     extensions: [ '.glsl', '.ts' ]
   },
   externals: [
-    '@leosingleton/commonlibs'
+    '@leosingleton/commonlibs',
+    nodeExternals()
   ],
   output: {
     path: path.resolve(__dirname, 'build/dist'),
