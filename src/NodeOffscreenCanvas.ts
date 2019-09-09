@@ -83,27 +83,34 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     let w = this.width;
     let h = this.height;
   
+    let context: OffscreenRenderingContext;
     switch (contextId) {
       case '2d':
-        this.contextId = '2d';
         let canvasContext = this.canvasContext;
         if (!canvasContext) {
           let canvas = this.canvas = createCanvas(w, h);
           canvasContext = this.canvasContext = canvas.getContext('2d', options);
         }
-        return canvasContext as any;
+        context = canvasContext as any;
+        break;
     
       case 'webgl':
-        this.contextId = 'webgl';
         let glContext = this.glContext;
         if (!glContext) {
           glContext = this.glContext = createContext(w, h);
+
+          // The gl library doesn't populate the canvas read-only property, which FIM needs. Force it.
+          (glContext.canvas as any) = this;
         }
-        return glContext;
+        context = glContext;
+        break;
 
       default:
         this.invalidContextId();
     }
+
+    this.contextId = contextId;
+    return context;
   }
 
   public transferToImageBitmap(): ImageBitmap {
