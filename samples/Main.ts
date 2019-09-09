@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimNodeOffscreenCanvasFactory } from '../build/dist/index.js';
+import { NodeOffscreenCanvasFactory } from '../build/dist/index.js';
 import { FimCanvas, FimGLCanvas } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
@@ -46,7 +46,7 @@ function usage(): void {
 
 async function processFile(op: string, input: Buffer): Promise<Buffer> {
   // Parse the input JPEG file
-  let inputImage = await FimCanvas.createFromJpeg(new Uint8Array(input), FimNodeOffscreenCanvasFactory);
+  let inputImage = await FimCanvas.createFromJpeg(new Uint8Array(input), NodeOffscreenCanvasFactory);
 
   // Perform the requested operation
   let outputImage: FimCanvas | FimGLCanvas;
