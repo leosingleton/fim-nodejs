@@ -8,6 +8,7 @@
     "noImplicitAny": true,
     "sourceMap": true,
 //    "strict": true
+    "esModuleInterop": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "samples", "**/__tests__/*"]
