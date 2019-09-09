@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimCanvasCreator } from '../build/dist/index.js';
+import { FimCanvasCreator, NodeOffscreenCanvas } from '../build/dist/index.js';
 import { FimCanvas, FimGLCanvas } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
@@ -61,8 +61,9 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
     }
 
     // Convert the output to JPEG
-    let jpeg = await outputImage.toJpeg();
-    return Buffer.from(jpeg);
+    let canvas = outputImage.getCanvas() as any as NodeOffscreenCanvas;
+    let buffer = await canvas.convertToBuffer({ type: 'image/jpeg', quality: 0.95 });
+    return buffer;
   } finally {
     inputImage.dispose();
     if (outputImage) {

@@ -5,6 +5,11 @@
 import { IDisposable } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 
+const enum MimeTypes {
+  PNG = 'image/png',
+  JPEG = 'image/jpeg'
+}
+
 export function NodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
   return new NodeOffscreenCanvas(width, height);
 }
@@ -26,38 +31,39 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     }
   }
 
-  public convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
+  public convertToBuffer(options?: ImageEncodeOptions): Promise<Buffer> {
     switch (this.contextId) {
       case '2d':
-        return this.convertToBlob2D(options);
+        return this.convertToBuffer2D(options);
 
       case 'webgl':
-        return this.convertToBlobGL(options);
+        return this.convertToBufferGL(options);
 
       default:
         this.invalidContextId();
     }
   }
 
-  private async convertToBlob2D(options?: ImageEncodeOptions): Promise<Blob> {
-    const png = 'image/png';
-    const jpeg = 'image/jpeg';
+  private async convertToBuffer2D(options?: ImageEncodeOptions): Promise<Buffer> {
     let canvas = this.canvas;
 
     // The default output type is PNG
-    if (!options || options.type === png) {
-      let buffer = canvas.toBuffer(png);
-      return new Blob([buffer], { type: png });
-    } else if (options.type === jpeg) {
-      let buffer = canvas.toBuffer(jpeg, { quality: options.quality });
-      return new Blob([buffer], { type: jpeg });
+    if (!options || options.type === MimeTypes.PNG) {
+      return canvas.toBuffer(MimeTypes.PNG);
+    } else if (options.type === MimeTypes.JPEG) {
+      return canvas.toBuffer(MimeTypes.JPEG, { quality: options.quality });
     } else {
       throw new Error('Invalid: ' + options.type);
     }
   }
 
-  private convertToBlobGL(options?: ImageEncodeOptions): Promise<Blob> {
+  private convertToBufferGL(options?: ImageEncodeOptions): Promise<Buffer> {
     throw new Error('not impl');
+  }
+
+  public async convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
+    let buffer = await this.convertToBuffer(options);
+    return new Blob([buffer], { type: options ? options.type || MimeTypes.PNG : MimeTypes.PNG });
   }
 
   public getContext(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext {
@@ -70,6 +76,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   
     switch (contextId) {
       case '2d':
+        this.contextId = '2d';
         let canvasContext = this.canvasContext;
         if (!canvasContext) {
           let canvas = this.canvas = createCanvas(w, h);
@@ -78,6 +85,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
         return canvasContext as any;
     
       case 'webgl':
+        this.contextId = 'webgl';
         let glContext = this.glContext;
         if (!glContext) {
           glContext = this.glContext = require('gl')(w, h);
