@@ -63,6 +63,10 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     // Just copy the WebGL canvas to a temporary Canvas2D and use its conversion functions
     let temp = new FimCanvas(this.width, this.height, null, NodeOffscreenCanvasFactory);
     try {
+      // Create a drawing context to force the underlying offscreen canvas to get allocated
+      let ctx = temp.createDrawingContext();
+      ctx.dispose();
+
       let oc = temp.getCanvas() as any as NodeOffscreenCanvas;
       return oc.convertToBuffer2D(options);
     } finally {
