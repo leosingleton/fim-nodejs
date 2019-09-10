@@ -18,7 +18,12 @@ var config = {
   resolve: {
     extensions: [ '.ts' ]
   },
-  externals: [ nodeExternals() ],
+  externals: [
+    nodeExternals({
+      // webpack-node-externals doesn't automatically find node_modules one level up from samples/
+      modulesDir: '../node_modules'
+    })
+  ],
   output: {
     path: path.resolve(__dirname, '../build/samples'),
     filename: 'samples.js'
