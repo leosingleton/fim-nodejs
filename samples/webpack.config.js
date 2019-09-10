@@ -4,7 +4,7 @@ const path = require('path');
 
 var config = {
   target: 'node',
-  entry: './src/index.ts',
+  entry: './samples/index.ts',
   devtool: 'source-map',
   module: {
     rules: [
@@ -18,20 +18,10 @@ var config = {
   resolve: {
     extensions: [ '.ts' ]
   },
-  externals: [
-    '@leosingleton/commonlibs',
-    'canvas',
-    'gl',
-    'jpeg-js',
-    nodeExternals()
-  ],
+  externals: [ nodeExternals() ],
   output: {
-    path: path.resolve(__dirname, 'build/dist'),
-    filename: 'index.js',
-    library: 'library',
-    libraryTarget: 'commonjs2',
-    umdNamedDefine: true,
-    globalObject: '(typeof self !== "undefined" ? self : this)'
+    path: path.resolve(__dirname, 'build/samples'),
+    filename: 'samples.js'
   }
 };
 
