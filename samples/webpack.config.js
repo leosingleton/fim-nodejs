@@ -20,7 +20,7 @@ var config = {
   },
   externals: [ nodeExternals() ],
   output: {
-    path: path.resolve(__dirname, 'build/samples'),
+    path: path.resolve(__dirname, '../build/samples'),
     filename: 'samples.js'
   }
 };

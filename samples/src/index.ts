@@ -1,11 +1,22 @@
-// fim-nodejs - Fast Image Manipulation Library for NodeJS
-// Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
-// See LICENSE in the project root for license information.
+/*!
+ * fim-nodejs - Fast Image Manipulation Library for NodeJS
+ * Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
+ * Released under the MIT license
+ */
 
-import { FimCanvasCreator, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../build/dist/index.js';
+import { FimCanvasCreator, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../../build/dist/index.js';
 import { FimCanvas, FimGLCanvas } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
+
+// The NodeJS 10 LTS doesn't yet have support for async at the root level. Wrap a main function instead.
+(async () => {
+  let code = await main(process.argv);
+  process.exit(code);
+})().catch(err => {
+  console.log(err);
+  process.exit(-1);
+});
 
 export async function main(argv: string[]): Promise<number> {
   if (argv.length < 5) {

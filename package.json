@@ -31,7 +31,8 @@
     "jpeg-js": "^0.3.6"
   },
   "scripts": {
-    "build": "npx webpack --mode=none"
+    "build": "npx webpack --mode=none",
+    "samples": "cd samples && npx webpack"
   },
   "files": [
     "build/dist/"
