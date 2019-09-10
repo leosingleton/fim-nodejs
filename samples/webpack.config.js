@@ -4,7 +4,7 @@ const path = require('path');
 
 var config = {
   target: 'node',
-  entry: './samples/index.ts',
+  entry: './src/index.ts',
   devtool: 'source-map',
   module: {
     rules: [
