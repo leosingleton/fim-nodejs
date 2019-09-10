@@ -32,7 +32,7 @@
   },
   "scripts": {
     "build": "npx webpack --mode=none",
-    "samples": "cd samples && npx webpack"
+    "samples": "cd samples && npx webpack --mode=none"
   },
   "files": [
     "build/dist/"
