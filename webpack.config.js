@@ -18,13 +18,7 @@ var config = {
   resolve: {
     extensions: [ '.ts' ]
   },
-  externals: [
-    '@leosingleton/commonlibs',
-    'canvas',
-    'gl',
-    'jpeg-js',
-    nodeExternals()
-  ],
+  externals: [ nodeExternals() ],
   output: {
     path: path.resolve(__dirname, 'build/dist'),
     filename: 'index.js',
