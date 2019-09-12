@@ -8,7 +8,7 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/build/samples/samples.js",
-        "gl-fill",
+        "gl-blur",
         "/tmp/in.jpg",
         "/tmp/out.jpg"
       ],
