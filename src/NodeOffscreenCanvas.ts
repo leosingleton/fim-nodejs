@@ -2,10 +2,10 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { IDisposable } from '@leosingleton/commonlibs';
+import { IDisposable, usingAsync, DisposableSet } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 import createContext from 'gl';
-import { FimCanvas } from '@leosingleton/fim';
+import { FimCanvas, FimRgbaBuffer } from '@leosingleton/fim';
 
 const enum MimeTypes {
   PNG = 'image/png',
@@ -59,19 +59,28 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     }
   }
 
-  private convertToBufferGL(options?: ImageEncodeOptions): Promise<Buffer> {
-    // Just copy the WebGL canvas to a temporary Canvas2D and use its conversion functions
-    let temp = new FimCanvas(this.width, this.height, null, NodeOffscreenCanvasFactory);
-    try {
-      // Create a drawing context to force the underlying offscreen canvas to get allocated
-      let ctx = temp.createDrawingContext();
-      ctx.dispose();
+  private async convertToBufferGL(options?: ImageEncodeOptions): Promise<Buffer> {
+    let gl = this.glContext;
+    let w = this.width;
+    let h = this.height;
+    let result: Buffer;
 
-      let oc = temp.getCanvas() as any as NodeOffscreenCanvas;
-      return oc.convertToBuffer2D(options);
-    } finally {
-      temp.dispose();
-    }
+    DisposableSet.usingAsync(async disposable => {
+      // Read the raw pixels into a byte array
+      let temp1 = disposable.addDisposable(new FimRgbaBuffer(w, h));
+      let pixels = temp1.getBuffer();
+      gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+      // Copy the pixels onto a canvas
+      let temp2 = disposable.addDisposable(new FimCanvas(w, h, null, NodeOffscreenCanvasFactory));
+      await temp2.copyFromAsync(temp1);
+
+      // Use convertToBuffer2D to convert to PNG or JPEG
+      let canvas = temp2.getCanvas() as any as NodeOffscreenCanvas;
+      result = await canvas.convertToBuffer2D(options);
+    });
+
+    return result;
   }
 
   public async convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
