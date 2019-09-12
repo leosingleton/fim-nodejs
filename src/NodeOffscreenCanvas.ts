@@ -65,7 +65,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     let h = this.height;
     let result: Buffer;
 
-    DisposableSet.usingAsync(async disposable => {
+    await DisposableSet.usingAsync(async disposable => {
       // Read the raw pixels into a byte array
       let temp1 = disposable.addDisposable(new FimRgbaBuffer(w, h));
       let pixels = temp1.getBuffer();
