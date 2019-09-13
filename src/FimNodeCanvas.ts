@@ -7,7 +7,7 @@ import { using, IDisposable } from '@leosingleton/commonlibs';
 import { FimCanvas } from '@leosingleton/fim';
 import { CanvasRenderingContext2D, Image } from 'canvas';
 
-export namespace FimCanvasCreator {
+export namespace FimNodeCanvas {
   /**
    * Creates a FimCanvas from a JPEG file
    * @param jpegFile JPEG file, loaded into a byte array
@@ -15,7 +15,7 @@ export namespace FimCanvasCreator {
   export function createFromJpeg(jpegFile: Uint8Array): Promise<FimCanvas> {
     // Create a Blob holding the binary data and load it onto an HTMLImageElement
     let buffer = Buffer.from(jpegFile);
-    return FimCanvasCreator.createFromImageBuffer(buffer);
+    return FimNodeCanvas.createFromImageBuffer(buffer);
   }
 
   /**

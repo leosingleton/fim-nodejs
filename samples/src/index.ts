@@ -4,7 +4,7 @@
  * Released under the MIT license
  */
 
-import { FimCanvasCreator, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../../build/dist/index.js';
+import { FimNodeCanvas, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../../build/dist/index.js';
 import { FimCanvas, FimGLCanvas, FimGLTexture, FimGLProgramMatrixOperation1DFast, FimGLTextureFlags,
   GaussianKernel } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
@@ -60,7 +60,7 @@ function usage(): void {
 
 async function processFile(op: string, input: Buffer): Promise<Buffer> {
   // Parse the input JPEG file
-  let inputImage = await FimCanvasCreator.createFromJpeg(new Uint8Array(input));
+  let inputImage = await FimNodeCanvas.createFromJpeg(new Uint8Array(input));
 
   // Perform the requested operation
   let outputImage: FimCanvas | FimGLCanvas;
