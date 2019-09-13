@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
+import { MimeTypes, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
 import { using, IDisposable } from '@leosingleton/commonlibs';
 import { FimCanvas, FimColor } from '@leosingleton/fim';
 import { CanvasRenderingContext2D, Image } from 'canvas';
@@ -25,7 +25,45 @@ export class FimNodeCanvas extends FimCanvas {
   public getNodeCanvas(): NodeOffscreenCanvas {
     return this.canvasElement as NodeOffscreenCanvas;
   }
-  
+
+  /**
+   * Exports the canvas to a PNG file
+   * @returns Buffer containing PNG data
+   */
+  public toPngBuffer(): Promise<Buffer> {
+    let canvas = this.getNodeCanvas();
+    return canvas.convertToBuffer({});
+  }
+
+  /**
+   * Exports the canvas to a PNG file
+   * @returns Array containing PNG data
+   */
+  public async toPng(): Promise<Uint8Array> {
+    let buffer = await this.toPngBuffer();
+    return new Uint8Array(buffer);
+  }
+
+  /**
+   * Exports the canvas to a JPEG file
+   * @param quality JPEG quality, 0 to 1
+   * @returns Buffer containing JPEG data
+   */
+  public async toJpegBuffer(quality = 0.95): Promise<Buffer> {
+    let canvas = this.getNodeCanvas();
+    return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
+  }
+
+  /**
+   * Exports the canvas to a JPEG file
+   * @param quality JPEG quality, 0 to 1
+   * @returns Array containing JPEG data
+   */
+  public async toJpeg(quality = 0.95): Promise<Uint8Array> {
+    let buffer = await this.toJpegBuffer(quality);
+    return new Uint8Array(buffer);
+  }
+
   /** Creates a new FimCanvas which is a duplicate of this one */
   public duplicateCanvas(): FimNodeCanvas {
     let dupe = new FimNodeCanvas(this.imageDimensions.w, this.imageDimensions.h);

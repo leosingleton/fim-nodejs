@@ -4,9 +4,8 @@
  * Released under the MIT license
  */
 
-import { FimNodeCanvas, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from '../../build/dist/index.js';
-import { FimCanvas, FimGLCanvas, FimGLTexture, FimGLProgramMatrixOperation1DFast, FimGLTextureFlags,
-  GaussianKernel } from '@leosingleton/fim';
+import { FimNodeCanvas, FimNodeGLCanvas, FimNodeGLTexture } from '../../build/dist/index.js';
+import { FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, GaussianKernel } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
 
@@ -63,7 +62,7 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
   let inputImage = await FimNodeCanvas.createFromJpeg(new Uint8Array(input));
 
   // Perform the requested operation
-  let outputImage: FimCanvas | FimGLCanvas;
+  let outputImage: FimNodeCanvas | FimNodeGLCanvas;
   try {
     switch (op) {
       case 'copy':
@@ -83,9 +82,7 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
     }
 
     // Convert the output to JPEG
-    let canvas = outputImage.getCanvas() as any as NodeOffscreenCanvas;
-    let buffer = await canvas.convertToBuffer({ type: 'image/jpeg', quality: 0.95 });
-    return buffer;
+    return outputImage.toJpegBuffer();
   } finally {
     inputImage.dispose();
     if (outputImage) {
@@ -94,17 +91,17 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
   }
 }
 
-async function copyOperation(inputImage: FimCanvas): Promise<FimCanvas> {
+async function copyOperation(inputImage: FimNodeCanvas): Promise<FimNodeCanvas> {
   return inputImage;
 }
 
-async function glFillOperation(inputImage: FimCanvas): Promise<FimGLCanvas> {
-  return new FimGLCanvas(inputImage.w, inputImage.h, '#00f', NodeOffscreenCanvasFactory);
+async function glFillOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
+  return new FimNodeGLCanvas(inputImage.w, inputImage.h, '#00f');
 }
 
-async function glBlurOperation(inputImage: FimCanvas): Promise<FimGLCanvas> {
-  let gl = new FimGLCanvas(inputImage.w, inputImage.h, null, NodeOffscreenCanvasFactory);
-  let texture = FimGLTexture.createFrom(gl, inputImage, FimGLTextureFlags.LinearSampling);
+async function glBlurOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
+  let gl = new FimNodeGLCanvas(inputImage.w, inputImage.h);
+  let texture = FimNodeGLTexture.createFrom(gl, inputImage, FimGLTextureFlags.LinearSampling);
   let program = new FimGLProgramMatrixOperation1DFast(gl, 13);
   let kernel = GaussianKernel.calculate(2, 13);
   program.setInputs(texture, kernel);

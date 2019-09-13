@@ -8,7 +8,7 @@ import { createCanvas, Canvas } from 'canvas';
 import createContext from 'gl';
 import { FimRgbaBuffer } from '@leosingleton/fim';
 
-const enum MimeTypes {
+export const enum MimeTypes {
   PNG = 'image/png',
   JPEG = 'image/jpeg'
 }
