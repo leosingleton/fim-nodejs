@@ -1,14 +1,14 @@
 {
-  "name": "@leosingleton/fim-nodejs",
+  "name": "@leosingleton/fim-node",
   "version": "0.1.0-alpha1",
   "author": "Leo C. Singleton IV <leo@leosingleton.com>",
-  "description": "Fast Image Manipulation Library for NodeJS",
-  "homepage": "https://github.com/leosingleton/fim-nodejs",
+  "description": "Fast Image Manipulation Library for Node.js",
+  "homepage": "https://github.com/leosingleton/fim-node",
   "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/leosingleton/fim-nodejs.git"
+    "url": "https://github.com/leosingleton/fim-node.git"
   },
   "devDependencies": {
     "@leosingleton/fim": "^1.0.0-alpha.21",
