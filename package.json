@@ -38,6 +38,7 @@
   "scripts": {
     "build": "npx webpack --mode=none",
     "test": "npx jest --config=jest.node.config.js --maxWorkers=2 --coverage",
+    "test:xvfb": "xvfb-run -s \"-ac -screen 0 1280x1024x24\" npm run test",
     "samples": "cd samples && npx webpack --mode=none"
   },
   "files": [

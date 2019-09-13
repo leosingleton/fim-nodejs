@@ -13,6 +13,10 @@ jobs:
     displayName: 'Install Node.js'
 
   - script: |
+      sudo apt-get -y install mesa-utils xvfb libgl1-mesa-dri libglapi-mesa libosmesa6
+    displayName: 'Install mesa and xvfb'
+
+  - script: |
       npm install
     displayName: 'npm install'
 
@@ -21,7 +25,7 @@ jobs:
     displayName: 'Compile Output'
 
   - script: |
-      npm run test
+      npm run test:xvfb
     displayName: 'Execute Unit Tests'
     continueOnError: true
 
