@@ -3,29 +3,45 @@
 // See LICENSE in the project root for license information.
 
 import { NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
-import { using } from '@leosingleton/commonlibs';
+import { using, IDisposable } from '@leosingleton/commonlibs';
 import { FimCanvas } from '@leosingleton/fim';
-import { createImageData } from 'canvas';
-import { decode } from 'jpeg-js';
+import { CanvasRenderingContext2D, Image } from 'canvas';
 
 export namespace FimCanvasCreator {
   /**
    * Creates a FimCanvas from a JPEG file
    * @param jpegFile JPEG file, loaded into a byte array
    */
-  export async function createFromJpeg(jpegFile: Uint8Array): Promise<FimCanvas> {
-    // Use the jpeg-js library to convert a byte array in JPEG format to a byte array of raw pixels
-    let decodedImage = decode(jpegFile, { useTArray: true });
-    let data = new Uint8ClampedArray(decodedImage.data);
-    let w = decodedImage.width;
-    let h = decodedImage.height;
+  export function createFromJpeg(jpegFile: Uint8Array): Promise<FimCanvas> {
+    // Create a Blob holding the binary data and load it onto an HTMLImageElement
+    let buffer = Buffer.from(jpegFile);
+    return FimCanvasCreator.createFromImageBuffer(buffer);
+  }
 
-    let imageData = createImageData(data, w, h);
-    let canvas = new FimCanvas(w, h, null, NodeOffscreenCanvasFactory);
-    using(canvas.createDrawingContext(), ctx => {
-      ctx.putImageData(imageData, 0, 0);
+  /**
+   * Creates a FimCanvas from a Blob containing an image
+   * @param buffer Buffer containing an image encoded in JPEG or PNG format
+   */
+  export function createFromImageBuffer(buffer: Buffer): Promise<FimCanvas> {
+    return new Promise((resolve, reject) => {
+      let img = new Image();
+
+      // On success, copy the image to a FimCanvas and return it via the Promise
+      img.onload = () => {
+        let result = new FimCanvas(img.width, img.height, undefined, NodeOffscreenCanvasFactory);
+        using(result.createDrawingContext() as any as CanvasRenderingContext2D & IDisposable, ctx => {
+          ctx.drawImage(img, 0, 0);
+        });
+
+        resolve(result);
+      };
+
+      // On error, return an exception via the Promise
+      img.onerror = err => {
+        reject(err);
+      };
+
+      img.src = buffer;
     });
-
-    return canvas;
   }
 }
