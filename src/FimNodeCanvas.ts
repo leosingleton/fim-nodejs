@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
+import { NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
 import { using, IDisposable } from '@leosingleton/commonlibs';
 import { FimCanvas, FimColor } from '@leosingleton/fim';
 import { CanvasRenderingContext2D, Image } from 'canvas';
@@ -21,6 +21,11 @@ export class FimNodeCanvas extends FimCanvas {
     super(width, height, initialColor, NodeOffscreenCanvasFactory);
   }
 
+  /** Returns the underlying NodeOffscreenCanvas */
+  public getNodeCanvas(): NodeOffscreenCanvas {
+    return this.canvasElement as NodeOffscreenCanvas;
+  }
+  
   /** Creates a new FimCanvas which is a duplicate of this one */
   public duplicateCanvas(): FimNodeCanvas {
     let dupe = new FimNodeCanvas(this.imageDimensions.w, this.imageDimensions.h);
@@ -45,7 +50,6 @@ export class FimNodeCanvas extends FimCanvas {
    * @param jpegFile JPEG file, loaded into a byte array
    */
   public static createFromJpeg(jpegFile: Uint8Array): Promise<FimNodeCanvas> {
-    // Create a Blob holding the binary data and load it onto an HTMLImageElement
     let buffer = Buffer.from(jpegFile);
     return FimNodeCanvas.createFromImageBuffer(buffer);
   }

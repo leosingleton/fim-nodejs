@@ -2,10 +2,11 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
+import { FimNodeCanvas } from './FimNodeCanvas';
 import { IDisposable, DisposableSet } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 import createContext from 'gl';
-import { FimCanvas, FimRgbaBuffer } from '@leosingleton/fim';
+import { FimRgbaBuffer } from '@leosingleton/fim';
 
 const enum MimeTypes {
   PNG = 'image/png',
@@ -72,11 +73,11 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
       gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
       // Copy the pixels onto a canvas
-      let temp2 = disposable.addDisposable(new FimCanvas(w, h, null, NodeOffscreenCanvasFactory));
+      let temp2 = disposable.addDisposable(new FimNodeCanvas(w, h));
       await temp2.copyFromAsync(temp1);
 
       // Use convertToBuffer2D to convert to PNG or JPEG
-      let canvas = temp2.getCanvas() as any as NodeOffscreenCanvas;
+      let canvas = temp2.getNodeCanvas();
       result = await canvas.convertToBuffer2D(options);
     });
 

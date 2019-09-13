@@ -5,4 +5,6 @@
  */
 
 export { FimNodeCanvas } from './FimNodeCanvas';
+export { FimNodeGLCanvas } from './FimNodeGLCanvas';
+export { FimNodeGLCapabilities } from './FimNodeGLCapabilities';
 export { NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
