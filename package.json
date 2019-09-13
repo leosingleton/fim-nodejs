@@ -11,16 +11,16 @@
     "url": "https://github.com/leosingleton/fim-nodejs.git"
   },
   "devDependencies": {
-    "@leosingleton/fim": "^1.0.0-alpha.20",
+    "@leosingleton/fim": "^1.0.0-alpha.21",
     "@types/get-stdin": "^7.0.0",
     "@types/gl": "^4.1.0",
-    "@types/node": "^12.7.3",
+    "@types/node": "^12.7.5",
     "copy-webpack-plugin": "^5.0.4",
     "get-stdin": "^7.0.0",
     "glob": "^7.1.4",
-    "ts-loader": "^6.0.4",
+    "ts-loader": "^6.1.0",
     "typescript": "3.5.3",
-    "webpack": "^4.39.3",
+    "webpack": "^4.40.0",
     "webpack-cli": "^3.3.7",
     "webpack-node-externals": "^1.7.2"
   },
