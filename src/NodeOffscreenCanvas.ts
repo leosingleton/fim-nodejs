@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { IDisposable, usingAsync, DisposableSet } from '@leosingleton/commonlibs';
+import { IDisposable, DisposableSet } from '@leosingleton/commonlibs';
 import { createCanvas, Canvas } from 'canvas';
 import createContext from 'gl';
 import { FimCanvas, FimRgbaBuffer } from '@leosingleton/fim';
