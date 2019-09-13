@@ -3,7 +3,10 @@
 // See LICENSE in the project root for license information.
 
 import { FimNodeGLCanvas } from '../FimNodeGLCanvas';
-import { FimColor } from '@leosingleton/fim';
+import { FimNodeGLTexture } from '../FimNodeGLTexture';
+import { FimColor, FimGLProgramMatrixOperation1DFast, FimRgbaBuffer, FimGLTextureFlags,
+  GaussianKernel } from '@leosingleton/fim';
+import { using } from '@leosingleton/commonlibs';
 
 describe('FimNodeGLCanvas', () => {
 
@@ -16,6 +19,19 @@ describe('FimNodeGLCanvas', () => {
 
     // No error on double-dispose
     canvas.dispose();
+  });
+
+  it('Executes a Gaussian blur', () => {
+    using(new FimNodeGLCanvas(100, 200), canvas => {
+      let color = new FimRgbaBuffer(100, 200, '#0f0');
+      let texture = FimNodeGLTexture.createFrom(canvas, color, FimGLTextureFlags.LinearSampling);
+      let program = new FimGLProgramMatrixOperation1DFast(canvas, 13);
+      let kernel = GaussianKernel.calculate(2, 13);
+      program.setInputs(texture, kernel);
+      program.execute();
+  
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #0f0!!!
+    });
   });
 
 });
