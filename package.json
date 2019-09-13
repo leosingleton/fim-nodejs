@@ -11,7 +11,6 @@
     "url": "https://github.com/leosingleton/fim-node.git"
   },
   "devDependencies": {
-    "@leosingleton/fim": "^1.0.0-alpha.21",
     "@types/get-stdin": "^7.0.0",
     "@types/gl": "^4.1.0",
     "@types/node": "^12.7.5",
@@ -26,6 +25,7 @@
   },
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",
+    "@leosingleton/fim": "^1.0.0-alpha.22",
     "canvas": "^2.6.0",
     "gl": "^4.4.0"
   },
