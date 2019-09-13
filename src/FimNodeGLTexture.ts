@@ -2,9 +2,11 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimGLTexture, FimGLTextureFlags, FimGLTextureOptions } from '@leosingleton/fim';
-import { Image } from 'canvas';
+import { FimBitsPerPixel, FimColorChannels, FimGLTexture, FimGLTextureFlags, FimGLTextureOptions, FimGreyscaleBuffer,
+  FimRect, FimRgbaBuffer } from '@leosingleton/fim';
 import { FimNodeGLCanvas } from './FimNodeGLCanvas';
+import { FimNodeCanvas } from './FimNodeCanvas';
+import { using } from '@leosingleton/commonlibs';
 
 /**
  * Enhanced version of FimGLTexture to support Node.js
@@ -22,44 +24,40 @@ export class FimNodeGLTexture extends FimGLTexture {
   }
 
   /**
-   * Creates a FimCanvas from a JPEG file
-   * @param glCanvas FimGLCanvas to which this texture belongs
-   * @param jpegFile JPEG file, loaded into a byte array
-   * @param extraFlags Additional flags. InputOnly is always enabled for textures created via this function.
+   * Copies image from another. Neither cropping nor rescaling is supported.
+   * @param srcImage Source image
+   * @param srcCoords Provided for consistency with other copyFrom() functions. Must be undefined.
+   * @param destCoords Provided for consistency with other copyFrom() functions. Must be undefined.
    */
-  public static createFromJpeg(glCanvas: FimNodeGLCanvas, jpegFile: Uint8Array, extraFlags = FimGLTextureFlags.None):
-      Promise<FimNodeGLTexture> {
-    let buffer = Buffer.from(jpegFile);
-    return FimNodeGLTexture.createFromImageBuffer(glCanvas, buffer, extraFlags);
+  public copyFrom(srcImage: FimNodeCanvas | FimNodeGLCanvas | FimGreyscaleBuffer | FimRgbaBuffer, srcCoords?: FimRect,
+      destCoords?: FimRect): void {
+    if (srcImage instanceof FimNodeCanvas || srcImage instanceof FimNodeGLCanvas) {
+      // headless-gl seems to have an issue when copying a texture from a canvas. Workaround by using an intermediate
+      // binary buffer.
+      using(new FimRgbaBuffer(srcImage.w, srcImage.h), temp => {
+        temp.copyFrom(srcImage);
+        this.copyFrom(temp, srcCoords, destCoords);
+      });
+    } else {
+      super.copyFrom(srcImage, srcCoords, destCoords);
+    }
   }
 
   /**
-   * Creates a FimCanvas from a Blob containing an image
-   * @param glCanvas FimGLCanvas to which this texture belongs
-   * @param buffer Buffer containing an image encoded in JPEG or PNG format
+   * Creates a new WebGL texture from another image
+   * @param canvas WebGL context
+   * @param srcImage Source image
    * @param extraFlags Additional flags. InputOnly is always enabled for textures created via this function.
    */
-  public static createFromImageBuffer(glCanvas: FimNodeGLCanvas, buffer: Buffer, extraFlags = FimGLTextureFlags.None):
-      Promise<FimNodeGLTexture> {
-    let flags = extraFlags | FimGLTextureFlags.InputOnly;
-  
-    return new Promise((resolve, reject) => {
-      let img = new Image();
+  public static createFrom(canvas: FimNodeGLCanvas, srcImage: FimGreyscaleBuffer | FimRgbaBuffer | FimNodeCanvas |
+      FimNodeGLCanvas, extraFlags = FimGLTextureFlags.None): FimGLTexture {
+    // Calculate parameters with defaults and extras
+    let channels = (srcImage instanceof FimGreyscaleBuffer) ? FimColorChannels.Greyscale : FimColorChannels.RGBA;
+    let bpp = FimBitsPerPixel.BPP8;
+    let flags = FimGLTextureFlags.InputOnly | extraFlags;
 
-      // On success, copy the image to a FimCanvas and return it via the Promise
-      img.onload = () => {
-        let result = new FimNodeGLTexture(glCanvas, img.width, img.height, { textureFlags: flags });
-        // TODO: copy image here
-
-        resolve(result);
-      };
-
-      // On error, return an exception via the Promise
-      img.onerror = err => {
-        reject(err);
-      };
-
-      img.src = buffer;
-    });
+    let texture = new FimNodeGLTexture(canvas, srcImage.w, srcImage.h, { channels, bpp, textureFlags: flags });
+    texture.copyFrom(srcImage);
+    return texture;
   }
 }
