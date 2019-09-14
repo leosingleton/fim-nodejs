@@ -5,9 +5,17 @@
 import { FimNodeGLCanvas } from '../FimNodeGLCanvas';
 import { FimNodeGLTexture } from '../FimNodeGLTexture';
 import { FimColor, FimGLProgramCopy, FimGLProgramFill, FimGLProgramMatrixOperation1D,
-  FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, FimRgbaBuffer, GaussianKernel, FimCanvas } from '@leosingleton/fim';
+  FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, FimRgbaBuffer, GaussianKernel } from '@leosingleton/fim';
 import { using, usingAsync } from '@leosingleton/commonlibs';
 import { FimNodeCanvas } from '../FimNodeCanvas';
+
+function expectToBeCloseTo(actual: FimColor, expectedColor: string): void {
+  let expected = FimColor.fromString(expectedColor);
+  expect(actual.r).toBeCloseTo(expected.r, -0.5);
+  expect(actual.g).toBeCloseTo(expected.g, -0.5);
+  expect(actual.b).toBeCloseTo(expected.b, -0.5);  
+  expect(actual.a).toBeCloseTo(expected.a, -0.5);  
+}
 
 describe('FimNodeGLCanvas', () => {
 
@@ -99,7 +107,7 @@ describe('FimNodeGLCanvas', () => {
       using(await FimNodeCanvas.createFromJpeg(jpeg), canvas2 => {
         expect(canvas2.w).toBe(100);
         expect(canvas2.h).toBe(200);
-        expect(canvas2.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #f00!!!
+        expectToBeCloseTo(canvas2.getPixel(50, 50), '#f00');
       });
     });
   });

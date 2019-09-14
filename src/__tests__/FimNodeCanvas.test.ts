@@ -6,7 +6,8 @@ import { FimNodeCanvas } from '../FimNodeCanvas';
 import { using, DisposableSet } from '@leosingleton/commonlibs';
 import { FimColor, FimTestImages } from '@leosingleton/fim';
 
-function expectToBeCloseTo(actual: FimColor, expected: FimColor): void {
+function expectToBeCloseTo(actual: FimColor, expectedColor: string): void {
+  let expected = FimColor.fromString(expectedColor);
   expect(actual.r).toBeCloseTo(expected.r, -0.5);
   expect(actual.g).toBeCloseTo(expected.g, -0.5);
   expect(actual.b).toBeCloseTo(expected.b, -0.5);  
@@ -32,10 +33,10 @@ describe('FimNodeCanvas', () => {
       expect(canvas.w).toEqual(128);
       expect(canvas.h).toEqual(128);
 
-      expectToBeCloseTo(canvas.getPixel(32, 32), FimColor.fromString('#f00'));
-      expectToBeCloseTo(canvas.getPixel(96, 32), FimColor.fromString('#0f0'));
-      expectToBeCloseTo(canvas.getPixel(32, 96), FimColor.fromString('#00f'));
-      expectToBeCloseTo(canvas.getPixel(96, 96), FimColor.fromString('#000'));
+      expectToBeCloseTo(canvas.getPixel(32, 32), '#f00');
+      expectToBeCloseTo(canvas.getPixel(96, 32), '#0f0');
+      expectToBeCloseTo(canvas.getPixel(32, 96), '#00f');
+      expectToBeCloseTo(canvas.getPixel(96, 96), '#000');
     });
   });
 
@@ -53,7 +54,7 @@ describe('FimNodeCanvas', () => {
       let canvas2 = disposable.addDisposable(await FimNodeCanvas.createFromJpeg(jpeg));
       expect(canvas2.w).toBe(200);
       expect(canvas2.h).toBe(100);
-      expectToBeCloseTo(canvas2.getPixel(50, 50), FimColor.fromString('#f00'));
+      expectToBeCloseTo(canvas2.getPixel(50, 50), '#f00');
     });
   });
 

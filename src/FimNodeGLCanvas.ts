@@ -47,7 +47,7 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @param quality JPEG quality, 0 to 1
    * @returns Buffer containing JPEG data
    */
-  public async toJpegBuffer(quality = 0.95): Promise<Buffer> {
+  public toJpegBuffer(quality = 0.95): Promise<Buffer> {
     let canvas = this.getNodeCanvas();
     return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
   }
