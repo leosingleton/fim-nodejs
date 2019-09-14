@@ -3,8 +3,15 @@
 // See LICENSE in the project root for license information.
 
 import { FimNodeCanvas } from '../FimNodeCanvas';
-import { using } from '@leosingleton/commonlibs';
+import { using, DisposableSet } from '@leosingleton/commonlibs';
 import { FimColor, FimTestImages } from '@leosingleton/fim';
+
+function expectToBeCloseTo(actual: FimColor, expected: FimColor): void {
+  expect(actual.r).toBeCloseTo(expected.r, -0.5);
+  expect(actual.g).toBeCloseTo(expected.g, -0.5);
+  expect(actual.b).toBeCloseTo(expected.b, -0.5);  
+  expect(actual.a).toBeCloseTo(expected.a, -0.5);  
+}
 
 describe('FimNodeCanvas', () => {
 
@@ -25,17 +32,28 @@ describe('FimNodeCanvas', () => {
       expect(canvas.w).toEqual(128);
       expect(canvas.h).toEqual(128);
 
-      function expectToBeCloseTo(actual: FimColor, expected: FimColor): void {
-        expect(actual.r).toBeCloseTo(expected.r, -0.5);
-        expect(actual.g).toBeCloseTo(expected.g, -0.5);
-        expect(actual.b).toBeCloseTo(expected.b, -0.5);  
-        expect(actual.a).toBeCloseTo(expected.a, -0.5);  
-      }
-
       expectToBeCloseTo(canvas.getPixel(32, 32), FimColor.fromString('#f00'));
       expectToBeCloseTo(canvas.getPixel(96, 32), FimColor.fromString('#0f0'));
       expectToBeCloseTo(canvas.getPixel(32, 96), FimColor.fromString('#00f'));
       expectToBeCloseTo(canvas.getPixel(96, 96), FimColor.fromString('#000'));
+    });
+  });
+
+  it('Exports to JPEG', async () => {
+    await DisposableSet.usingAsync(async disposable => {
+      let canvas1 = disposable.addDisposable(new FimNodeCanvas(200, 100, '#f00'));
+      let jpeg = await canvas1.toJpeg();
+
+      // JPEG magic number is FF D8 FF
+      expect(jpeg[0]).toBe(0xff);
+      expect(jpeg[1]).toBe(0xd8);
+      expect(jpeg[2]).toBe(0xff);
+  
+      // Decode the JPEG
+      let canvas2 = disposable.addDisposable(await FimNodeCanvas.createFromJpeg(jpeg));
+      expect(canvas2.w).toBe(200);
+      expect(canvas2.h).toBe(100);
+      expectToBeCloseTo(canvas2.getPixel(50, 50), FimColor.fromString('#f00'));
     });
   });
 
