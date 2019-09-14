@@ -26,7 +26,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Executes a Gaussian blur', () => {
-    using(new FimNodeGLCanvas(100, 200), canvas => {
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
       let color = new FimRgbaBuffer(100, 200, '#00f');
       let texture = FimNodeGLTexture.createFrom(canvas, color);
       let program = new FimGLProgramMatrixOperation1D(canvas, 13);
@@ -39,7 +39,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Executes a Gaussian blur with linear sampling', () => {
-    using(new FimNodeGLCanvas(100, 200), canvas => {
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
       let color = new FimRgbaBuffer(100, 200, '#0f0');
       let texture = FimNodeGLTexture.createFrom(canvas, color, FimGLTextureFlags.LinearSampling);
       let program = new FimGLProgramMatrixOperation1DFast(canvas, 13);
