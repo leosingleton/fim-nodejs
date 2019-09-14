@@ -7,6 +7,7 @@ import { FimNodeGLTexture } from '../FimNodeGLTexture';
 import { FimColor, FimGLProgramCopy, FimGLProgramFill, FimGLProgramMatrixOperation1D,
   FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, FimRgbaBuffer, GaussianKernel } from '@leosingleton/fim';
 import { using } from '@leosingleton/commonlibs';
+import { FimNodeCanvas } from '../FimNodeCanvas';
 
 describe('FimNodeGLCanvas', () => {
 
@@ -38,6 +39,18 @@ describe('FimNodeGLCanvas', () => {
   it('Executes a WebGL copy shader', () => {
     using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
       let color = new FimRgbaBuffer(100, 200, '#0f0');
+      let texture = FimNodeGLTexture.createFrom(canvas, color);
+      let program = new FimGLProgramCopy(canvas);
+      program.setInputs(texture);
+      program.execute();
+
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    });
+  });
+
+  it('Creates a texture from a FimNodeCanvas', () => {
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
+      let color = new FimNodeCanvas(100, 200, '#0f0');
       let texture = FimNodeGLTexture.createFrom(canvas, color);
       let program = new FimGLProgramCopy(canvas);
       program.setInputs(texture);
