@@ -4,9 +4,9 @@
 
 import { FimNodeCanvas } from './FimNodeCanvas';
 import { IDisposable, DisposableSet } from '@leosingleton/commonlibs';
+import { FimGLError, FimRgbaBuffer } from '@leosingleton/fim';
 import { createCanvas, Canvas } from 'canvas';
 import createContext from 'gl';
-import { FimRgbaBuffer } from '@leosingleton/fim';
 
 export const enum MimeTypes {
   PNG = 'image/png',
@@ -69,8 +69,12 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     await DisposableSet.usingAsync(async disposable => {
       // Read the raw pixels into a byte array
       let temp1 = disposable.addDisposable(new FimRgbaBuffer(w, h));
-      let pixels = temp1.getBuffer();
+      let pixels = new Uint8Array(temp1.getBuffer());
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      FimGLError.throwOnError(gl);
       gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+      FimGLError.throwOnError(gl);
 
       // Copy the pixels onto a canvas
       let temp2 = disposable.addDisposable(new FimNodeCanvas(w, h));
