@@ -4,8 +4,8 @@
 
 import { FimNodeGLCanvas } from '../FimNodeGLCanvas';
 import { FimNodeGLTexture } from '../FimNodeGLTexture';
-import { FimColor, FimGLProgramMatrixOperation1D, FimGLProgramMatrixOperation1DFast, FimRgbaBuffer, FimGLTextureFlags,
-  GaussianKernel } from '@leosingleton/fim';
+import { FimColor, FimGLProgramFill, FimGLProgramMatrixOperation1D, FimGLProgramMatrixOperation1DFast,
+  FimGLTextureFlags, FimRgbaBuffer, GaussianKernel } from '@leosingleton/fim';
 import { using } from '@leosingleton/commonlibs';
 
 describe('FimNodeGLCanvas', () => {
@@ -23,6 +23,16 @@ describe('FimNodeGLCanvas', () => {
 
     // No error on double-dispose
     canvas.dispose();
+  });
+
+  it('Executes a WebGL fill shader', () => {
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
+      let program = new FimGLProgramFill(canvas);
+      program.setInputs(FimColor.fromString('#0f0'));
+      program.execute();
+  
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    });
   });
 
   it('Executes a Gaussian blur', () => {
