@@ -5,8 +5,8 @@
 import { FimNodeGLCanvas } from '../FimNodeGLCanvas';
 import { FimNodeGLTexture } from '../FimNodeGLTexture';
 import { FimColor, FimGLProgramCopy, FimGLProgramFill, FimGLProgramMatrixOperation1D,
-  FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, FimRgbaBuffer, GaussianKernel } from '@leosingleton/fim';
-import { using } from '@leosingleton/commonlibs';
+  FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, FimRgbaBuffer, GaussianKernel, FimCanvas } from '@leosingleton/fim';
+import { using, usingAsync } from '@leosingleton/commonlibs';
 import { FimNodeCanvas } from '../FimNodeCanvas';
 
 describe('FimNodeGLCanvas', () => {
@@ -83,6 +83,24 @@ describe('FimNodeGLCanvas', () => {
       program.execute();
   
       expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #0f0!!!
+    });
+  });
+
+  it('Exports to JPEG', async () => {
+    await usingAsync(new FimNodeGLCanvas(100, 200, '#f00'), async canvas => {
+      let jpeg = await canvas.toJpeg();
+
+      // JPEG magic number is FF D8 FF
+      expect(jpeg[0]).toBe(0xff);
+      expect(jpeg[1]).toBe(0xd8);
+      expect(jpeg[2]).toBe(0xff);
+  
+      // Decode the JPEG
+      using(await FimNodeCanvas.createFromJpeg(jpeg), canvas2 => {
+        expect(canvas2.w).toBe(100);
+        expect(canvas2.h).toBe(200);
+        expect(canvas2.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #f00!!!
+      });
     });
   });
 
