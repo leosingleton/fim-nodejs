@@ -9,12 +9,22 @@ import { GlslMinify, GlslShader } from 'webpack-glsl-minify/build/minify';
 
 describe('Sample Programs', () => {
 
-  it('Accepts a float array as a uniform', async () => {
+  it('Accepts no uniforms', async () => {
     let shader = await compileShader(yellowShader);
     using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
       let program = new SampleProgram(canvas, shader);
       program.execute();  
       expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#ff0'));
+    });
+  });
+
+  it('Accepts a float as a uniform', async () => {
+    let shader = await compileShader(greenShader);
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
+      let program = new SampleProgram(canvas, shader);
+      program.setInput('uGreen', 1);
+      program.execute();  
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
     });
   });
 
@@ -43,7 +53,11 @@ class SampleProgram extends FimGLProgram {
 }
 
 function compileShader(shader: string): Promise<GlslShader> {
-  let min = new GlslMinify();
+  let min = new GlslMinify({  
+    preserveDefines: true,
+    preserveUniforms: true,
+    preserveVariables: true
+  });
   return min.execute(shader);
 }
 
@@ -55,6 +69,18 @@ varying vec2 vCoord;
 void main()
 {
   gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+}`;
+
+/** Simple shader to test passing of a float as uniforms */
+const greenShader = `
+precision mediump float;
+varying vec2 vCoord;
+
+uniform float uGreen;
+
+void main()
+{
+  gl_FragColor = vec4(0.0, uGreen, 0.0, 1.0);
 }`;
 
 /** Simple shader to test passing arrays of floats as uniforms */
