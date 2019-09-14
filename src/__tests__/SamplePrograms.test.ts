@@ -19,10 +19,20 @@ describe('Sample Programs', () => {
   });
 
   it('Accepts a float as a uniform', async () => {
-    let shader = await compileShader(greenShader);
+    let shader = await compileShader(floatUniformShader);
     using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
       let program = new SampleProgram(canvas, shader);
       program.setInput('uGreen', 1);
+      program.execute();  
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    });
+  });
+
+  it('Accepts a vec3 as a uniform', async () => {
+    let shader = await compileShader(vectorUniformShader);
+    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
+      let program = new SampleProgram(canvas, shader);
+      program.setInput('uColor', [0, 1, 0]);
       program.execute();  
       expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
     });
@@ -72,7 +82,7 @@ void main()
 }`;
 
 /** Simple shader to test passing of a float as uniforms */
-const greenShader = `
+const floatUniformShader = `
 precision mediump float;
 varying vec2 vCoord;
 
@@ -81,6 +91,18 @@ uniform float uGreen;
 void main()
 {
   gl_FragColor = vec4(0.0, uGreen, 0.0, 1.0);
+}`;
+
+/** Simple shader to test passing arrays of vectors as uniforms */
+const vectorUniformShader = `
+precision mediump float;
+varying vec2 vCoord;
+
+uniform vec3 uColor;
+
+void main()
+{
+  gl_FragColor = vec4(uColor, 1.0);
 }`;
 
 /** Simple shader to test passing arrays of floats as uniforms */
