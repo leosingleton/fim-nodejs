@@ -15,6 +15,10 @@ describe('FimNodeGLCanvas', () => {
     expect(canvas.w).toBe(100);
     expect(canvas.h).toBe(200);
     expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#f00'));
+
+    // Fill with a different color
+    canvas.fillCanvas('#0f0');
+    expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
     canvas.dispose();
 
     // No error on double-dispose
