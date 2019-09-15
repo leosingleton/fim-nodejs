@@ -77,7 +77,7 @@ describe('FimNodeGLCanvas', () => {
       program.setInputs(texture, kernel);
       program.execute();
   
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #00f!!!
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#00f'));
     });
   });
 
@@ -90,7 +90,7 @@ describe('FimNodeGLCanvas', () => {
       program.setInputs(texture, kernel);
       program.execute();
   
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #0f0!!!
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
     });
   });
 

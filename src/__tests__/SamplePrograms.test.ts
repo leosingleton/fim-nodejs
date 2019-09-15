@@ -44,7 +44,7 @@ describe('Sample Programs', () => {
       let program = new SampleProgram(canvas, shader);
       program.setInput('uColor', [0, 1, 0]);
       program.execute();
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#000')); // BUGBUG: Should be #0f0!!!
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
     });
   });
 
