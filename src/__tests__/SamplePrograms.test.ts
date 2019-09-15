@@ -48,6 +48,18 @@ describe('Sample Programs', () => {
     });
   });
 
+  it('getPixel() has the correct orientation', async () => {
+    let shader = await compileShader(gradientShader);
+    using(new FimNodeGLCanvas(1000, 1000, '#f00'), canvas => {
+      let program = new SampleProgram(canvas, shader);
+      program.execute();
+      expect(canvas.getPixel(0, 0)).toEqual(FimColor.fromString('#000'));
+      expect(canvas.getPixel(0, 999)).toEqual(FimColor.fromString('#000'));
+      expect(canvas.getPixel(999, 0)).toEqual(FimColor.fromString('#fff'));
+      expect(canvas.getPixel(999, 999)).toEqual(FimColor.fromString('#000'));
+    });
+  });
+
 });
 
 /** Generic wrapper around FimGLProgram */
@@ -115,4 +127,14 @@ uniform float uColor[3];
 void main()
 {
   gl_FragColor = vec4(uColor[0], uColor[1], uColor[2], 1.0);
+}`;
+
+/** Simple shader to ensure we have the orientation correct */
+const gradientShader = `
+precision mediump float;
+varying vec2 vCoord;
+
+void main()
+{
+  gl_FragColor = vec4(vec3(vCoord.x * vCoord.y), 1.0);
 }`;

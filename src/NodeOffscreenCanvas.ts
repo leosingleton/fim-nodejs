@@ -73,6 +73,17 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, raw);
     FimGLError.throwOnError(gl);
 
+    // Flip the image on the Y axis
+    let row = w * 4;
+    let temp = new Uint8Array(row);
+    for (let y = 0; y < Math.floor(h / 2); y++) {
+      let offset1 = y * row;
+      let offset2 = (h - y - 1) * row;
+      temp.set(raw.subarray(offset1, offset1 + row));
+      raw.set(raw.subarray(offset2, offset2 + row), offset1);
+      raw.set(temp, offset2);
+    }
+
     // Copy the raw pixels on to a Canvas
     let canvas = new Canvas(w, h);
     let ctx = canvas.getContext('2d');
