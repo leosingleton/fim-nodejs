@@ -4,6 +4,7 @@
  * Released under the MIT license
  */
 
+import { GradientProgram } from './GradientProgram';
 import { FimNodeCanvas, FimNodeGLCanvas, FimNodeGLTexture } from '../../build/dist/index.js';
 import { FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, GaussianKernel } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
@@ -73,6 +74,10 @@ async function processFile(op: string, input: Buffer): Promise<Buffer> {
         outputImage = await glFillOperation(inputImage);
         break;
 
+      case 'gl-gradient':
+        outputImage = await glGradientOperation(inputImage);
+        break;
+
       case 'gl-blur':
         outputImage = await glBlurOperation(inputImage);
         break;
@@ -97,6 +102,13 @@ async function copyOperation(inputImage: FimNodeCanvas): Promise<FimNodeCanvas> 
 
 async function glFillOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
   return new FimNodeGLCanvas(inputImage.w, inputImage.h, '#00f');
+}
+
+async function glGradientOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
+  let gl = new FimNodeGLCanvas(inputImage.w, inputImage.h);
+  let program = await GradientProgram.create(gl);
+  program.execute();
+  return gl;
 }
 
 async function glBlurOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
