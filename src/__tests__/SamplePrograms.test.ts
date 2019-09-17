@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimNodeGLCanvas } from '../FimNodeGLCanvas';
+import { FimNode } from '../FimNode';
 import { FimColor, FimGLCanvas, FimGLProgram } from '@leosingleton/fim';
 import { using } from '@leosingleton/commonlibs';
 import { GlslMinify, GlslShader } from 'webpack-glsl-minify/build/minify';
@@ -11,52 +11,62 @@ describe('Sample Programs', () => {
 
   it('Accepts no uniforms', async () => {
     let shader = await compileShader(yellowShader);
-    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
-      let program = new SampleProgram(canvas, shader);
-      program.execute();  
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#ff0'));
+    using(new FimNode(), fim => {
+      using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
+        let program = new SampleProgram(canvas, shader);
+        program.execute();  
+        expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#ff0'));
+      });  
     });
   });
 
   it('Accepts a float as a uniform', async () => {
     let shader = await compileShader(floatUniformShader);
-    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
-      let program = new SampleProgram(canvas, shader);
-      program.setInput('uGreen', 1);
-      program.execute();  
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    using(new FimNode(), fim => {
+      using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
+        let program = new SampleProgram(canvas, shader);
+        program.setInput('uGreen', 1);
+        program.execute();  
+        expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+      });  
     });
   });
 
   it('Accepts a vec3 as a uniform', async () => {
     let shader = await compileShader(vectorUniformShader);
-    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
-      let program = new SampleProgram(canvas, shader);
-      program.setInput('uColor', [0, 1, 0]);
-      program.execute();  
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    using(new FimNode(), fim => {
+      using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
+        let program = new SampleProgram(canvas, shader);
+        program.setInput('uColor', [0, 1, 0]);
+        program.execute();  
+        expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+      });  
     });
   });
 
   it('Accepts a float array as a uniform', async () => {
     let shader = await compileShader(floatArrayUniformShader);
-    using(new FimNodeGLCanvas(100, 200, '#f00'), canvas => {
-      let program = new SampleProgram(canvas, shader);
-      program.setInput('uColor', [0, 1, 0]);
-      program.execute();
-      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+    using(new FimNode(), fim => {
+      using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
+        let program = new SampleProgram(canvas, shader);
+        program.setInput('uColor', [0, 1, 0]);
+        program.execute();
+        expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#0f0'));
+      });  
     });
   });
 
   it('getPixel() has the correct orientation', async () => {
     let shader = await compileShader(gradientShader);
-    using(new FimNodeGLCanvas(1000, 1000, '#f00'), canvas => {
-      let program = new SampleProgram(canvas, shader);
-      program.execute();
-      expect(canvas.getPixel(0, 0)).toEqual(FimColor.fromString('#000'));
-      expect(canvas.getPixel(0, 999)).toEqual(FimColor.fromString('#000'));
-      expect(canvas.getPixel(999, 0)).toEqual(FimColor.fromString('#fff'));
-      expect(canvas.getPixel(999, 999)).toEqual(FimColor.fromString('#000'));
+    using(new FimNode(), fim => {
+      using(fim.createGLCanvas(1000, 1000, '#f00'), canvas => {
+        let program = new SampleProgram(canvas, shader);
+        program.execute();
+        expect(canvas.getPixel(0, 0)).toEqual(FimColor.fromString('#000'));
+        expect(canvas.getPixel(0, 999)).toEqual(FimColor.fromString('#000'));
+        expect(canvas.getPixel(999, 0)).toEqual(FimColor.fromString('#fff'));
+        expect(canvas.getPixel(999, 999)).toEqual(FimColor.fromString('#000'));
+      });  
     });
   });
 

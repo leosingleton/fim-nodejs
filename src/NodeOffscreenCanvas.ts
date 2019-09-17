@@ -12,7 +12,8 @@ export const enum MimeTypes {
   JPEG = 'image/jpeg'
 }
 
-export function NodeOffscreenCanvasFactory(width: number, height: number): OffscreenCanvas & IDisposable {
+export function NodeOffscreenCanvasFactory(width: number, height: number, canvasId: string): OffscreenCanvas &
+    IDisposable {
   return new NodeOffscreenCanvas(width, height);
 }
 

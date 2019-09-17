@@ -2,7 +2,8 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { MimeTypes, NodeOffscreenCanvas, NodeOffscreenCanvasFactory } from './NodeOffscreenCanvas';
+import { FimNode } from './FimNode';
+import { MimeTypes, NodeOffscreenCanvas } from './NodeOffscreenCanvas';
 import { using, IDisposable } from '@leosingleton/commonlibs';
 import { FimCanvas, FimColor } from '@leosingleton/fim';
 import { CanvasRenderingContext2D, Image } from 'canvas';
@@ -13,16 +14,17 @@ import { CanvasRenderingContext2D, Image } from 'canvas';
 export class FimNodeCanvas extends FimCanvas {
   /**
    * Creates an invisible canvas
+   * @param fim FIM canvas factory
    * @param width Canvas width, in pixels
    * @param height Canvas height, in pixels
    * @param initialColor If specified, the canvas is initalized to this color.
    */
-  public constructor(width: number, height: number, initialColor?: string | FimColor) {
-    super(width, height, initialColor, NodeOffscreenCanvasFactory);
+  protected constructor(fim: FimNode, width: number, height: number, initialColor?: FimColor | string) {
+    super(fim, width, height, initialColor);
   }
 
   /** Returns the underlying NodeOffscreenCanvas */
-  public getNodeCanvas(): NodeOffscreenCanvas {
+  public getCanvas(): NodeOffscreenCanvas {
     return this.canvasElement as NodeOffscreenCanvas;
   }
 
@@ -31,7 +33,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Buffer containing PNG data
    */
   public toPngBuffer(): Promise<Buffer> {
-    let canvas = this.getNodeCanvas();
+    let canvas = this.getCanvas();
     return canvas.convertToBuffer({});
   }
 
@@ -50,7 +52,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Buffer containing JPEG data
    */
   public async toJpegBuffer(quality = 0.95): Promise<Buffer> {
-    let canvas = this.getNodeCanvas();
+    let canvas = this.getCanvas();
     return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
   }
 
@@ -66,7 +68,7 @@ export class FimNodeCanvas extends FimCanvas {
 
   /** Creates a new FimCanvas which is a duplicate of this one */
   public duplicateCanvas(): FimNodeCanvas {
-    let dupe = new FimNodeCanvas(this.imageDimensions.w, this.imageDimensions.h);
+    let dupe = (this.fim as any as FimNode).createCanvas(this.imageDimensions.w, this.imageDimensions.h);
     dupe.copyFromCanvas(this, this.imageDimensions, this.imageDimensions);
     return dupe;
   }
@@ -82,27 +84,36 @@ export class FimNodeCanvas extends FimCanvas {
     return super.createDrawingContext(imageSmoothingEnabled, operation, alpha) as
       (CanvasRenderingContext2D & IDisposable);
   }
+}
 
-  /**
-   * Creates a FimCanvas from a JPEG file
-   * @param jpegFile JPEG file, loaded into a byte array
-   */
-  public static createFromJpeg(jpegFile: Uint8Array): Promise<FimNodeCanvas> {
-    let buffer = Buffer.from(jpegFile);
-    return FimNodeCanvas.createFromImageBuffer(buffer);
+/** Internal only version of the class */
+export class _FimNodeCanvas extends FimNodeCanvas {
+  public constructor(fim: FimNode, width: number, height: number, initialColor?: FimColor | string) {
+    super(fim, width, height, initialColor);
   }
 
   /**
-   * Creates a FimCanvas from a Blob containing an image
+   * Creates a FimCanvas from a JPEG file
+   * @param fim FIM canvas factory
+   * @param jpegFile JPEG file, loaded into a byte array
+   */
+  public static createFromJpegAsync(fim: FimNode, jpegFile: Uint8Array): Promise<FimNodeCanvas> {
+    let buffer = Buffer.from(jpegFile);
+    return _FimNodeCanvas.createFromImageBufferAsync(fim, buffer);
+  }
+
+  /**
+   * Creates a FimCanvas from a Buffer containing an image
+   * @param fim FIM canvas factory
    * @param buffer Buffer containing an image encoded in JPEG or PNG format
    */
-  public static createFromImageBuffer(buffer: Buffer): Promise<FimNodeCanvas> {
+  public static createFromImageBufferAsync(fim: FimNode, buffer: Buffer): Promise<FimNodeCanvas> {
     return new Promise((resolve, reject) => {
       let img = new Image();
 
       // On success, copy the image to a FimCanvas and return it via the Promise
       img.onload = () => {
-        let result = new FimNodeCanvas(img.width, img.height);
+        let result = fim.createCanvas(img.width, img.height);
         using(result.createDrawingContext(), ctx => {
           ctx.drawImage(img, 0, 0);
         });

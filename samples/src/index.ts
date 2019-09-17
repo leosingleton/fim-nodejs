@@ -5,7 +5,7 @@
  */
 
 import { GradientProgram } from './GradientProgram';
-import { FimNodeCanvas, FimNodeGLCanvas, FimNodeGLTexture } from '../../build/dist/index.js';
+import { FimNode, FimNodeCanvas, FimNodeGLCanvas, FimNodeGLTexture } from '../../build/dist/index.js';
 import { FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, GaussianKernel } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';
@@ -18,6 +18,9 @@ import { buffer } from 'get-stdin';
   console.log(err);
   process.exit(-1);
 });
+
+/** Global instance of the FIM library */
+let fim = new FimNode();
 
 export async function main(argv: string[]): Promise<number> {
   if (argv.length < 5) {
@@ -60,7 +63,7 @@ function usage(): void {
 
 async function processFile(op: string, input: Buffer): Promise<Buffer> {
   // Parse the input JPEG file
-  let inputImage = await FimNodeCanvas.createFromJpeg(new Uint8Array(input));
+  let inputImage = await fim.createCanvasFromJpegAsync(new Uint8Array(input));
 
   // Perform the requested operation
   let outputImage: FimNodeCanvas | FimNodeGLCanvas;
@@ -101,19 +104,19 @@ async function copyOperation(inputImage: FimNodeCanvas): Promise<FimNodeCanvas> 
 }
 
 async function glFillOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
-  return new FimNodeGLCanvas(inputImage.w, inputImage.h, '#00f');
+  return fim.createGLCanvas(inputImage.w, inputImage.h, '#00f');
 }
 
 async function glGradientOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
-  let gl = new FimNodeGLCanvas(inputImage.w, inputImage.h);
+  let gl = fim.createGLCanvas(inputImage.w, inputImage.h);
   let program = await GradientProgram.create(gl);
   program.execute();
   return gl;
 }
 
 async function glBlurOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
-  let gl = new FimNodeGLCanvas(inputImage.w, inputImage.h);
-  let texture = FimNodeGLTexture.createFrom(gl, inputImage, FimGLTextureFlags.LinearSampling);
+  let gl = fim.createGLCanvas(inputImage.w, inputImage.h);
+  let texture = gl.createTextureFrom(inputImage, FimGLTextureFlags.LinearSampling);
   let program = new FimGLProgramMatrixOperation1DFast(gl, 13);
   let kernel = GaussianKernel.calculate(2, 13);
   program.setInputs(texture, kernel);
