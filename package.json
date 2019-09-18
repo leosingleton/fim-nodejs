@@ -1,6 +1,6 @@
 {
   "name": "@leosingleton/fim-node",
-  "version": "0.1.0-alpha1",
+  "version": "0.1.0-alpha.2",
   "author": "Leo C. Singleton IV <leo@leosingleton.com>",
   "description": "Fast Image Manipulation Library for Node.js",
   "homepage": "https://github.com/leosingleton/fim-node",
@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",
-    "@leosingleton/fim": "^1.0.0-alpha.25",
+    "@leosingleton/fim": "^1.0.0-alpha.26",
     "canvas": "^2.6.0",
     "gl": "^4.4.0"
   },
