@@ -23,9 +23,11 @@ export class FimNodeCanvas extends FimCanvas {
     super(fim, width, height, initialColor);
   }
 
+  protected canvasElement: NodeOffscreenCanvas;
+
   /** Returns the underlying NodeOffscreenCanvas */
-  public getCanvas(): NodeOffscreenCanvas {
-    return this.canvasElement as NodeOffscreenCanvas;
+  public getCanvas(): OffscreenCanvas {
+    return this.canvasElement as OffscreenCanvas;
   }
 
   /**
@@ -33,8 +35,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Buffer containing PNG data
    */
   public toPngBuffer(): Promise<Buffer> {
-    let canvas = this.getCanvas();
-    return canvas.convertToBuffer({});
+    return this.canvasElement.convertToBuffer({});
   }
 
   /**
@@ -52,8 +53,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Buffer containing JPEG data
    */
   public async toJpegBuffer(quality = 0.95): Promise<Buffer> {
-    let canvas = this.getCanvas();
-    return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
+    return this.canvasElement.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
   }
 
   /**

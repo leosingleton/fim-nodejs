@@ -5,7 +5,7 @@
  */
 
 import { GradientProgram } from './GradientProgram';
-import { FimNode, FimNodeCanvas, FimNodeGLCanvas, FimNodeGLTexture } from '../../build/dist/index.js';
+import { FimNode, FimNodeCanvas, FimNodeGLCanvas } from '../../build/dist/index.js';
 import { FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, GaussianKernel } from '@leosingleton/fim';
 import { readFileSync, writeFileSync } from 'fs';
 import { buffer } from 'get-stdin';

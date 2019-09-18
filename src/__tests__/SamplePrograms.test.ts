@@ -3,7 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { FimNode } from '../FimNode';
-import { FimColor, FimGLCanvas, FimGLProgram } from '@leosingleton/fim';
+import { Fim, FimColor, FimGLCanvas, FimGLProgram } from '@leosingleton/fim';
 import { using } from '@leosingleton/commonlibs';
 import { GlslMinify, GlslShader } from 'webpack-glsl-minify/build/minify';
 
@@ -11,7 +11,7 @@ describe('Sample Programs', () => {
 
   it('Accepts no uniforms', async () => {
     let shader = await compileShader(yellowShader);
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let program = new SampleProgram(canvas, shader);
         program.execute();  
@@ -22,7 +22,7 @@ describe('Sample Programs', () => {
 
   it('Accepts a float as a uniform', async () => {
     let shader = await compileShader(floatUniformShader);
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let program = new SampleProgram(canvas, shader);
         program.setInput('uGreen', 1);
@@ -34,7 +34,7 @@ describe('Sample Programs', () => {
 
   it('Accepts a vec3 as a uniform', async () => {
     let shader = await compileShader(vectorUniformShader);
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let program = new SampleProgram(canvas, shader);
         program.setInput('uColor', [0, 1, 0]);
@@ -46,7 +46,7 @@ describe('Sample Programs', () => {
 
   it('Accepts a float array as a uniform', async () => {
     let shader = await compileShader(floatArrayUniformShader);
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let program = new SampleProgram(canvas, shader);
         program.setInput('uColor', [0, 1, 0]);
@@ -58,7 +58,7 @@ describe('Sample Programs', () => {
 
   it('getPixel() has the correct orientation', async () => {
     let shader = await compileShader(gradientShader);
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(1000, 1000, '#f00'), canvas => {
         let program = new SampleProgram(canvas, shader);
         program.execute();

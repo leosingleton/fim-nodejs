@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",
-    "@leosingleton/fim": "^1.0.0-alpha.26",
+    "@leosingleton/fim": "^1.0.0-alpha.27",
     "canvas": "^2.6.0",
     "gl": "^4.4.0"
   },

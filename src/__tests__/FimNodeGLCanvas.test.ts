@@ -3,8 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { FimNode } from '../FimNode';
-import { FimNodeGLTexture } from '../FimNodeGLTexture';
-import { FimColor, FimGLProgramCopy, FimGLProgramFill, FimGLProgramMatrixOperation1D,
+import { Fim, FimColor, FimGLProgramCopy, FimGLProgramFill, FimGLProgramMatrixOperation1D,
   FimGLProgramMatrixOperation1DFast, FimGLTextureFlags, GaussianKernel } from '@leosingleton/fim';
 import { using, usingAsync } from '@leosingleton/commonlibs';
 
@@ -19,7 +18,7 @@ function expectToBeCloseTo(actual: FimColor, expectedColor: string): void {
 describe('FimNodeGLCanvas', () => {
 
   it('Creates, fills, and disposes', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       let canvas = fim.createGLCanvas(100, 200, '#f00');
       expect(canvas.w).toBe(100);
       expect(canvas.h).toBe(200);
@@ -36,7 +35,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Executes a WebGL fill shader', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let program = new FimGLProgramFill(canvas);
         program.setInputs(FimColor.fromString('#0f0'));
@@ -48,7 +47,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Executes a WebGL copy shader', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let color = fim.createRgbaBuffer(100, 200, '#0f0');
         let texture = canvas.createTextureFrom(color);
@@ -62,7 +61,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Creates a texture from a FimNodeCanvas', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let color = fim.createCanvas(100, 200, '#0f0');
         let texture = canvas.createTextureFrom(color);
@@ -76,7 +75,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Executes a Gaussian blur', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(100, 200, '#f00'), canvas => {
         let color = fim.createRgbaBuffer(100, 200, '#00f');
         let texture = canvas.createTextureFrom(color);
@@ -106,7 +105,7 @@ describe('FimNodeGLCanvas', () => {
   });
 
   it('Exports to JPEG', async () => {
-    await usingAsync(new FimNode(), async fim => {
+    await usingAsync(new FimNode() as Fim, async fim => {
       await usingAsync(fim.createGLCanvas(100, 200, '#f00'), async canvas => {
         let jpeg = await canvas.toJpeg();
   

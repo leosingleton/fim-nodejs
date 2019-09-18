@@ -4,7 +4,7 @@
 
 import { IDisposable } from '@leosingleton/commonlibs';
 import { FimGLError } from '@leosingleton/fim';
-import { Canvas, createCanvas, createImageData, Image } from 'canvas';
+import { Canvas, createCanvas, createImageData } from 'canvas';
 import createContext from 'gl';
 
 export const enum MimeTypes {
@@ -31,6 +31,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     if (gl) {
       let ext = gl.getExtension('STACKGL_destroy_context');
       ext.destroy();
+      delete this.glContext;
     }
   }
 

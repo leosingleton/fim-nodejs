@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimGLTexture, FimGLTextureOptions, FimRect, IFimGreyscaleBuffer, IFimRgbaBuffer } from '@leosingleton/fim';
+import { FimGLTexture, FimGLTextureOptions, FimRect, FimGreyscaleBuffer, FimRgbaBuffer } from '@leosingleton/fim';
 import { FimNodeGLCanvas } from './FimNodeGLCanvas';
 import { FimNodeCanvas } from './FimNodeCanvas';
 import { using } from '@leosingleton/commonlibs';
@@ -28,7 +28,7 @@ export class FimNodeGLTexture extends FimGLTexture {
    * @param srcCoords Provided for consistency with other copyFrom() functions. Must be undefined.
    * @param destCoords Provided for consistency with other copyFrom() functions. Must be undefined.
    */
-  public copyFrom(srcImage: FimNodeCanvas | FimNodeGLCanvas | IFimGreyscaleBuffer | IFimRgbaBuffer,
+  public copyFrom(srcImage: FimNodeCanvas | FimNodeGLCanvas | FimGreyscaleBuffer | FimRgbaBuffer,
       srcCoords?: FimRect, destCoords?: FimRect): void {
     if (srcImage instanceof FimNodeCanvas || srcImage instanceof FimNodeGLCanvas) {
       // headless-gl seems to have an issue when copying a texture from a canvas. Workaround by using an intermediate

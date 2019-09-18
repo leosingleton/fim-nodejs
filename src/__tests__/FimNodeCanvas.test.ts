@@ -2,9 +2,9 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { DisposableSet, using, usingAsync } from '@leosingleton/commonlibs';
-import { FimColor, FimTestImages } from '@leosingleton/fim';
 import { FimNode } from '../FimNode';
+import { DisposableSet, using, usingAsync } from '@leosingleton/commonlibs';
+import { Fim, FimColor, FimTestImages } from '@leosingleton/fim';
 
 function expectToBeCloseTo(actual: FimColor, expectedColor: string): void {
   let expected = FimColor.fromString(expectedColor);
@@ -17,7 +17,7 @@ function expectToBeCloseTo(actual: FimColor, expectedColor: string): void {
 describe('FimNodeCanvas', () => {
 
   it('Creates, fills, and disposes', () => {
-    using(new FimNode(), fim => {
+    using(new FimNode() as Fim, fim => {
       let canvas = fim.createCanvas(100, 200, '#f00');
       expect(canvas.w).toBe(100);
       expect(canvas.h).toBe(200);
@@ -31,7 +31,7 @@ describe('FimNodeCanvas', () => {
 
   it('Imports from JPEG', async () => {
     let jpeg = new Uint8Array(Buffer.from(FimTestImages.fourSquaresJpegBase64, 'base64'));
-    await usingAsync(new FimNode(), async fim => {
+    await usingAsync(new FimNode() as Fim, async fim => {
       using(await fim.createCanvasFromJpegAsync(jpeg), canvas => {
         expect(canvas.w).toEqual(128);
         expect(canvas.h).toEqual(128);
@@ -46,7 +46,7 @@ describe('FimNodeCanvas', () => {
 
   it('Exports to JPEG', async () => {
     await DisposableSet.usingAsync(async disposable => {
-      let fim = new FimNode();
+      let fim = new FimNode() as Fim;
       let canvas1 = disposable.addDisposable(fim.createCanvas(200, 100, '#f00'));
       let jpeg = await canvas1.toJpeg();
 

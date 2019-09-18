@@ -2,17 +2,17 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimGLProgram, IFimGLCanvas } from '@leosingleton/fim';
+import { FimGLProgram, FimGLCanvas } from '@leosingleton/fim';
 import { GlslMinify, GlslShader } from 'webpack-glsl-minify/build/minify';
 
 /** WebGL program to draw a gradient from (0,0) to (1,1) */
 export class GradientProgram extends FimGLProgram {
-  private constructor(canvas: IFimGLCanvas, fragmentShader: GlslShader) {
+  private constructor(canvas: FimGLCanvas, fragmentShader: GlslShader) {
     super(canvas, fragmentShader);
     this.compileProgram();
   }
 
-  public static async create(canvas: IFimGLCanvas): Promise<GradientProgram> {
+  public static async create(canvas: FimGLCanvas): Promise<GradientProgram> {
     let min = new GlslMinify({  
       preserveDefines: true,
       preserveUniforms: true,
