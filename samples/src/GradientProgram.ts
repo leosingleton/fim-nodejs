@@ -2,7 +2,7 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimGLCanvas, FimGLProgram } from '@leosingleton/fim';
+import { FimGLProgram, FimGLCanvas } from '@leosingleton/fim';
 import { GlslMinify, GlslShader } from 'webpack-glsl-minify/build/minify';
 
 /** WebGL program to draw a gradient from (0,0) to (1,1) */
