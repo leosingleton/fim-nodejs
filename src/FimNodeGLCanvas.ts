@@ -74,7 +74,7 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @param options See FimGLTextureOptions
    */
   public createTexture(width?: number, height?: number, options?: FimGLTextureOptions): FimNodeGLTexture {
-    return new _FimNodeGLTexture(this, width, height, options);
+    return this.disposable.addDisposable(new _FimNodeGLTexture(this, width, height, options));
   }
 }
 

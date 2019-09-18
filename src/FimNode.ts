@@ -25,23 +25,23 @@ export class FimNode extends Fim {
    * @param initialColor If specified, the canvas is initalized to this color.
    */
   public createCanvas(width: number, height: number, initialColor?: FimColor | string): FimNodeCanvas {
-    return new _FimNodeCanvas(this, width, height, initialColor);
+    return this.disposable.addDisposable(new _FimNodeCanvas(this, width, height, initialColor));
   }
 
   /**
    * Creates a 2D canvas from a JPEG file
    * @param buffer Buffer containing an image encoded in JPEG or PNG format
    */
-  public createCanvasFromJpegAsync(jpegFile: Uint8Array): Promise<FimNodeCanvas> {
-    return _FimNodeCanvas.createFromJpegAsync(this, jpegFile);
+  public async createCanvasFromJpegAsync(jpegFile: Uint8Array): Promise<FimNodeCanvas> {
+    return this.disposable.addDisposable(await _FimNodeCanvas.createFromJpegAsync(this, jpegFile));
   }
 
   /**
    * Creates a 2D canvas from a Buffer containing an image
    * @param blob Blob of type 'image/*'
    */
-  public createFromImageBufferAsync(buffer: Buffer): Promise<FimNodeCanvas> {
-    return _FimNodeCanvas.createFromImageBufferAsync(this, buffer);
+  public async createFromImageBufferAsync(buffer: Buffer): Promise<FimNodeCanvas> {
+    return this.disposable.addDisposable(await _FimNodeCanvas.createFromImageBufferAsync(this, buffer));
   }
 
   /**
@@ -54,6 +54,6 @@ export class FimNode extends Fim {
    */
   public createGLCanvas(width: number, height: number, initialColor?: FimColor | string, quality = 1):
       FimNodeGLCanvas {
-    return new _FimNodeGLCanvas(this, width, height, initialColor, quality);
+    return this.disposable.addDisposable(new _FimNodeGLCanvas(this, width, height, initialColor, quality));
   }
 }
