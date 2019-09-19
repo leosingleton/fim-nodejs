@@ -2,12 +2,12 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { NodeOffscreenCanvas } from '../NodeOffscreenCanvas';
+import { NodeOffscreenCanvasFactory, NodeOffscreenCanvas } from '../NodeOffscreenCanvas';
 
 describe('NodeOffscreenCanvas', () => {
 
   it('Creates and disposes', () => {
-    let oc = new NodeOffscreenCanvas(100, 200);
+    let oc = NodeOffscreenCanvasFactory(100, 200, null);
     expect(oc.width).toBe(100);
     expect(oc.height).toBe(200);
     oc.dispose();
@@ -17,7 +17,7 @@ describe('NodeOffscreenCanvas', () => {
   });
 
   it('Gets a Canvas2D drawing context', () => {
-    let oc = new NodeOffscreenCanvas(100, 200);
+    let oc = NodeOffscreenCanvasFactory(100, 200, null);
     let ctx = oc.getContext('2d') as OffscreenCanvasRenderingContext2D;
     expect(ctx).toBeDefined();
 
@@ -28,13 +28,13 @@ describe('NodeOffscreenCanvas', () => {
   });
 
   it('Gets a WebGL rendering context', () => {
-    let oc = new NodeOffscreenCanvas(100, 200);
+    let oc = NodeOffscreenCanvasFactory(100, 200, null);
     let ctx = oc.getContext('webgl') as WebGLRenderingContext;
     expect(ctx).toBeDefined();
   });
 
   it('Exports to JPEG', async () => {
-    let oc = new NodeOffscreenCanvas(100, 200);
+    let oc = NodeOffscreenCanvasFactory(100, 200, null) as NodeOffscreenCanvas;
     let ctx = oc.getContext('webgl') as WebGLRenderingContext;
     expect(ctx).toBeDefined();
 
@@ -48,7 +48,7 @@ describe('NodeOffscreenCanvas', () => {
   });
 
   it('Exports to PNG', async () => {
-    let oc = new NodeOffscreenCanvas(100, 200);
+    let oc = NodeOffscreenCanvasFactory(100, 200, null) as NodeOffscreenCanvas;
     let ctx = oc.getContext('webgl') as WebGLRenderingContext;
     expect(ctx).toBeDefined();
 
