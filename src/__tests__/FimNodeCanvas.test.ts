@@ -63,4 +63,14 @@ describe('FimNodeCanvas', () => {
     });
   });
 
+  it('Copies from FimNodeGLCanvas', async () => {
+    await DisposableSet.usingAsync(async disposable => {
+      let fim = new FimNode() as Fim;
+      let gl = disposable.addDisposable(fim.createGLCanvas(240, 240, '#00f'));
+      let canvas = disposable.addDisposable(fim.createCanvas(240, 240));
+      canvas.copyFrom(gl);
+      expect(canvas.getPixel(50, 50)).toEqual(FimColor.fromString('#00f'));
+    });
+  });
+
 });
