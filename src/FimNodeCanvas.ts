@@ -3,9 +3,10 @@
 // See LICENSE in the project root for license information.
 
 import { FimNode } from './FimNode';
-import { MimeTypes, NodeOffscreenCanvas } from './NodeOffscreenCanvas';
+import { FimNodeGLCanvas } from './FimNodeGLCanvas';
+import { NodeOffscreenCanvas, _NodeOffscreenCanvas, MimeTypes } from './NodeOffscreenCanvas';
 import { using, IDisposable } from '@leosingleton/commonlibs';
-import { FimCanvas, FimColor } from '@leosingleton/fim';
+import { FimCanvas, FimColor, FimRect } from '@leosingleton/fim';
 import { CanvasRenderingContext2D, Image } from 'canvas';
 
 /**
@@ -83,6 +84,28 @@ export class FimNodeCanvas extends FimCanvas {
       CanvasRenderingContext2D & IDisposable {
     return super.createDrawingContext(imageSmoothingEnabled, operation, alpha) as
       (CanvasRenderingContext2D & IDisposable);
+  }
+
+  protected copyFromCanvas(srcImage: FimNodeCanvas | FimNodeGLCanvas, srcCoords?: FimRect, destCoords?: FimRect): void {
+    // Default parameters
+    srcCoords = srcCoords || srcImage.imageDimensions;
+    destCoords = destCoords || this.imageDimensions;
+
+    // Scale the coordinates
+    srcCoords = srcCoords.rescale(srcImage.downscaleRatio);
+    destCoords = destCoords.rescale(this.downscaleRatio);
+
+    // Copy the canvas
+    let canvas = srcImage.getCanvas() as _NodeOffscreenCanvas;
+    if (srcImage instanceof FimNodeCanvas) {
+      let oc = canvas.getCanvas() as any as OffscreenCanvas;
+      FimCanvas.copyCanvasToCanvas(oc, this.canvasElement, srcCoords, destCoords);
+    } else if (srcImage instanceof FimNodeGLCanvas) {
+      let oc = canvas.convertGLToCanvas() as any as OffscreenCanvas;
+      FimCanvas.copyCanvasToCanvas(oc, this.canvasElement, srcCoords, destCoords);
+    } else {
+      this.throwOnInvalidImageKind(srcImage);
+    }
   }
 }
 

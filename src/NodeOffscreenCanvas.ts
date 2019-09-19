@@ -14,11 +14,11 @@ export const enum MimeTypes {
 
 export function NodeOffscreenCanvasFactory(width: number, height: number, canvasId: string): OffscreenCanvas &
     IDisposable {
-  return new NodeOffscreenCanvas(width, height);
+  return new _NodeOffscreenCanvas(width, height);
 }
 
 export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
-  public constructor(width: number, height: number) {
+  protected constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
   }
@@ -38,21 +38,21 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public async convertToBuffer(options?: ImageEncodeOptions): Promise<Buffer> {
     switch (this.contextId) {
       case '2d':
-        return this.convertToBuffer2D(options);
+        return this.convert2DToBuffer(options);
 
       case 'webgl':
-        return this.convertToBufferGL(options);
+        return this.convertGLToBuffer(options);
 
       default:
         this.invalidContextId();
     }
   }
 
-  private convertToBuffer2D(options?: ImageEncodeOptions): Buffer {
-    return NodeOffscreenCanvas.convertCanvasToBuffer2D(this.canvas, options);
+  private convert2DToBuffer(options?: ImageEncodeOptions): Buffer {
+    return NodeOffscreenCanvas.convertCanvasToBuffer(this.canvas, options);
   }
 
-  private static convertCanvasToBuffer2D(canvas: Canvas, options?: ImageEncodeOptions): Buffer {
+  private static convertCanvasToBuffer(canvas: Canvas, options?: ImageEncodeOptions): Buffer {
     // The default output type is PNG
     if (!options || options.type === MimeTypes.PNG) {
       return canvas.toBuffer(MimeTypes.PNG);
@@ -63,7 +63,7 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     }
   }
 
-  private convertToBufferGL(options?: ImageEncodeOptions): Buffer {
+  protected convertGLToCanvas(): Canvas {
     let gl = this.glContext;
     let w = this.width;
     let h = this.height;
@@ -92,8 +92,14 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     let img = createImageData(new Uint8ClampedArray(raw), w, h);
     ctx.putImageData(img, 0, 0);
 
+    return canvas;
+  }
+
+  private convertGLToBuffer(options?: ImageEncodeOptions): Buffer {
+    let canvas = this.convertGLToCanvas();
+
     // The rest of the code is shared with Canvas2D
-    return NodeOffscreenCanvas.convertCanvasToBuffer2D(canvas, options);
+    return NodeOffscreenCanvas.convertCanvasToBuffer(canvas, options);
   }
 
   public async convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
@@ -161,8 +167,23 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     throw new Error('Only Canvas2D and WebGL are supported');
   }
 
-  private contextId?: '2d' | 'webgl';
-  private glContext: WebGLRenderingContext;
-  private canvas: Canvas;
-  private canvasContext: CanvasRenderingContext2D;
+  protected contextId?: '2d' | 'webgl';
+  protected glContext: WebGLRenderingContext;
+  protected canvas: Canvas;
+  protected canvasContext: CanvasRenderingContext2D;
+}
+
+/** Internal only */
+export class _NodeOffscreenCanvas extends NodeOffscreenCanvas {
+  public constructor(width: number, height: number) {
+    super(width, height);
+  }
+
+  public getCanvas(): Canvas {
+    return this.canvas;
+  }
+
+  public convertGLToCanvas(): Canvas {
+    return super.convertGLToCanvas();
+  }
 }
