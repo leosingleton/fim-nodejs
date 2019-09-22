@@ -31,8 +31,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "@leosingleton/fim": "^1.0.1-alpha",
     "@leosingleton/commonlibs": "^1.1.1-alpha",
+    "@leosingleton/fim": "^1.0.1-alpha",
     "canvas": "^2.6.0",
     "gl": "^4.4.0"
   },
