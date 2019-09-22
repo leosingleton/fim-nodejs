@@ -30,9 +30,11 @@
     "webpack-glsl-minify": "^1.1.2",
     "webpack-node-externals": "^1.7.2"
   },
+  "peerDependencies": {
+    "@leosingleton/fim": "^1.0.0-alpha.28"
+  },
   "dependencies": {
     "@leosingleton/commonlibs": "^1.0.0-alpha.25",
-    "@leosingleton/fim": "^1.0.0-alpha.28",
     "canvas": "^2.6.0",
     "gl": "^4.4.0"
   },
