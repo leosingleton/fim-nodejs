@@ -3,7 +3,7 @@
 // See LICENSE in the project root for license information.
 
 import { IDisposable } from '@leosingleton/commonlibs';
-import { FimGLError } from '@leosingleton/fim';
+import { FimCanvasType, FimGLError } from '@leosingleton/fim';
 import { Canvas, createCanvas, createImageData } from 'canvas';
 import createContext from 'gl';
 
@@ -12,11 +12,20 @@ export const enum MimeTypes {
   JPEG = 'image/jpeg'
 }
 
-export function NodeOffscreenCanvasFactory(width: number, height: number, canvasId: string): OffscreenCanvas &
-    IDisposable {
+/**
+ * Constructs an OffscreenCanvas-like object for Node.js
+ * @param width Width of the canvas, in pixels
+ * @param height Height of the canvas, in pixels
+ * @param canvasType Type of the canvas, either 2D or WebGL
+ * @param canvasId Unique ID for logging and debugging
+ * @returns OffscreenCanvas-like object
+ */
+export function NodeOffscreenCanvasFactory(width: number, height: number, canvasType: FimCanvasType, canvasId: string):
+    OffscreenCanvas & IDisposable {
   return new _NodeOffscreenCanvas(width, height);
 }
 
+/** OffscreenCanvas-like object for Node.js. Internally it uses the node-canvas and headless-gl packages. */
 export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   protected constructor(width: number, height: number) {
     this.width = width;
