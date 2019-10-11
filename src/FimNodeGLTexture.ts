@@ -2,7 +2,8 @@
 // Copyright (c) Leo C. Singleton IV <leo@leosingleton.com>
 // See LICENSE in the project root for license information.
 
-import { FimGLTexture, FimGLTextureOptions, FimRect, FimGreyscaleBuffer, FimRgbaBuffer } from '@leosingleton/fim';
+import { FimColor, FimGLTexture, FimGLTextureOptions, FimRect, FimGreyscaleBuffer,
+  FimRgbaBuffer } from '@leosingleton/fim';
 import { FimNodeGLCanvas } from './FimNodeGLCanvas';
 import { FimNodeCanvas } from './FimNodeCanvas';
 import { using } from '@leosingleton/commonlibs';
@@ -17,9 +18,11 @@ export class FimNodeGLTexture extends FimGLTexture {
    * @param width Texture width, in pixels. Defaults to the width of the FimGLCanvas if not specified.
    * @param height Texture height, in pixels. Defaults to the width of the FimGLCanvas if not specified.
    * @param options See FimGLTextureOptions
+   * @param initialColor If specified, the texture is initalized to this color
    */
-  protected constructor(glCanvas: FimNodeGLCanvas, width?: number, height?: number, options?: FimGLTextureOptions) {
-    super(glCanvas, width, height, options);
+  protected constructor(glCanvas: FimNodeGLCanvas, width?: number, height?: number, options?: FimGLTextureOptions,
+      initialColor?: FimColor | string) {
+    super(glCanvas, width, height, options, initialColor);
   }
 
   /**
@@ -45,7 +48,8 @@ export class FimNodeGLTexture extends FimGLTexture {
 
 /** Internal only version of the class */
 export class _FimNodeGLTexture extends FimNodeGLTexture {
-  public constructor(glCanvas: FimNodeGLCanvas, width?: number, height?: number, options?: FimGLTextureOptions) {
-    super(glCanvas, width, height, options);
+  public constructor(glCanvas: FimNodeGLCanvas, width?: number, height?: number, options?: FimGLTextureOptions,
+    initialColor?: FimColor | string) {
+    super(glCanvas, width, height, options, initialColor);
   }
 }
