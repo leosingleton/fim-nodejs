@@ -13,12 +13,12 @@ export class GradientProgram extends FimGLProgram {
   }
 
   public static async create(canvas: FimGLCanvas): Promise<GradientProgram> {
-    let min = new GlslMinify({  
+    const min = new GlslMinify({
       preserveDefines: true,
       preserveUniforms: true,
       preserveVariables: true
     });
-    let shader = await min.execute(gradientShader);
+    const shader = await min.execute(gradientShader);
 
     return new GradientProgram(canvas, shader);
   }

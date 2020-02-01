@@ -44,7 +44,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Array containing PNG data
    */
   public async toPng(): Promise<Uint8Array> {
-    let buffer = await this.toPngBuffer();
+    const buffer = await this.toPngBuffer();
     return new Uint8Array(buffer);
   }
 
@@ -54,7 +54,7 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Buffer containing JPEG data
    */
   public async toJpegBuffer(quality = 0.95): Promise<Buffer> {
-    return this.canvasElement.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
+    return this.canvasElement.convertToBuffer({ type: MimeTypes.JPEG, quality });
   }
 
   /**
@@ -63,17 +63,17 @@ export class FimNodeCanvas extends FimCanvas {
    * @returns Array containing JPEG data
    */
   public async toJpeg(quality = 0.95): Promise<Uint8Array> {
-    let buffer = await this.toJpegBuffer(quality);
+    const buffer = await this.toJpegBuffer(quality);
     return new Uint8Array(buffer);
   }
 
   /** Creates a new FimCanvas which is a duplicate of this one */
   public duplicateCanvas(): FimNodeCanvas {
-    let dupe = (this.fim as any as FimNode).createCanvas(this.imageDimensions.w, this.imageDimensions.h);
+    const dupe = (this.fim as any as FimNode).createCanvas(this.imageDimensions.w, this.imageDimensions.h);
     dupe.copyFromCanvas(this, this.imageDimensions, this.imageDimensions);
     return dupe;
   }
-  
+
   /**
    * Constructs a drawing context
    * @param imageSmoothingEnabled Enables image smoothing
@@ -96,12 +96,12 @@ export class FimNodeCanvas extends FimCanvas {
     destCoords = destCoords.rescale(this.downscaleRatio);
 
     // Copy the canvas
-    let canvas = srcImage.getCanvas() as _NodeOffscreenCanvas;
+    const canvas = srcImage.getCanvas() as _NodeOffscreenCanvas;
     if (srcImage instanceof FimNodeCanvas) {
-      let oc = canvas.getCanvas() as any as OffscreenCanvas;
+      const oc = canvas.getCanvas() as any as OffscreenCanvas;
       FimCanvas.copyCanvasToCanvas(oc, this.canvasElement, srcCoords, destCoords);
     } else if (srcImage instanceof FimNodeGLCanvas) {
-      let oc = canvas.convertGLToCanvas() as any as OffscreenCanvas;
+      const oc = canvas.convertGLToCanvas() as any as OffscreenCanvas;
       FimCanvas.copyCanvasToCanvas(oc, this.canvasElement, srcCoords, destCoords);
     } else {
       this.throwOnInvalidImageKind(srcImage);
@@ -121,7 +121,7 @@ export class _FimNodeCanvas extends FimNodeCanvas {
    * @param jpegFile JPEG file, loaded into a byte array
    */
   public static createFromJpegAsync(fim: FimNode, jpegFile: Uint8Array): Promise<FimNodeCanvas> {
-    let buffer = Buffer.from(jpegFile);
+    const buffer = Buffer.from(jpegFile);
     return _FimNodeCanvas.createFromImageBufferAsync(fim, buffer);
   }
 
@@ -132,11 +132,11 @@ export class _FimNodeCanvas extends FimNodeCanvas {
    */
   public static createFromImageBufferAsync(fim: FimNode, buffer: Buffer): Promise<FimNodeCanvas> {
     return new Promise((resolve, reject) => {
-      let img = new Image();
+      const img = new Image();
 
       // On success, copy the image to a FimCanvas and return it via the Promise
       img.onload = () => {
-        let result = fim.createCanvas(img.width, img.height);
+        const result = fim.createCanvas(img.width, img.height);
         using(result.createDrawingContext(), ctx => {
           ctx.drawImage(img, 0, 0);
         });

@@ -11,8 +11,8 @@ describe('FimNodeGLTexture', () => {
   it('Fills with solid colors', () => {
     using(new FimNode() as Fim, fim => {
       using(fim.createGLCanvas(200, 200), gl => {
-        let texture = gl.createTexture();
-        let program = new FimGLProgramCopy(gl);
+        const texture = gl.createTexture();
+        const program = new FimGLProgramCopy(gl);
 
         // Fill with red
         texture.fillTexture('#f00');

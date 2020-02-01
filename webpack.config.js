@@ -1,8 +1,7 @@
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 
-var config = {
+const config = {
   target: 'node',
   entry: './src/index.ts',
   devtool: 'source-map',
