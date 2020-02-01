@@ -20,8 +20,8 @@ export const enum MimeTypes {
  * @param canvasId Unique ID for logging and debugging
  * @returns OffscreenCanvas-like object
  */
-export function NodeOffscreenCanvasFactory(width: number, height: number, canvasType: FimCanvasType, canvasId: string):
-    OffscreenCanvas & IDisposable {
+export function NodeOffscreenCanvasFactory(width: number, height: number, _canvasType: FimCanvasType,
+    _canvasId: string): OffscreenCanvas & IDisposable {
   return new _NodeOffscreenCanvas(width, height);
 }
 
@@ -36,9 +36,9 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   public readonly height: number;
 
   public dispose(): void {
-    let gl = this.glContext;
+    const gl = this.glContext;
     if (gl) {
-      let ext = gl.getExtension('STACKGL_destroy_context');
+      const ext = gl.getExtension('STACKGL_destroy_context');
       ext.destroy();
       delete this.glContext;
     }
@@ -73,46 +73,46 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
   }
 
   protected convertGLToCanvas(): Canvas {
-    let gl = this.glContext;
-    let w = this.width;
-    let h = this.height;
+    const gl = this.glContext;
+    const w = this.width;
+    const h = this.height;
 
     // Read the raw pixels into a byte array
-    let raw = new Uint8Array(w * h * 4);
+    const raw = new Uint8Array(w * h * 4);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     FimGLError.throwOnError(gl);
     gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, raw);
     FimGLError.throwOnError(gl);
 
     // Flip the image on the Y axis
-    let row = w * 4;
-    let temp = new Uint8Array(row);
+    const row = w * 4;
+    const temp = new Uint8Array(row);
     for (let y = 0; y < Math.floor(h / 2); y++) {
-      let offset1 = y * row;
-      let offset2 = (h - y - 1) * row;
+      const offset1 = y * row;
+      const offset2 = (h - y - 1) * row;
       temp.set(raw.subarray(offset1, offset1 + row));
       raw.set(raw.subarray(offset2, offset2 + row), offset1);
       raw.set(temp, offset2);
     }
 
     // Copy the raw pixels on to a Canvas
-    let canvas = new Canvas(w, h);
-    let ctx = canvas.getContext('2d');
-    let img = createImageData(new Uint8ClampedArray(raw), w, h);
+    const canvas = new Canvas(w, h);
+    const ctx = canvas.getContext('2d');
+    const img = createImageData(new Uint8ClampedArray(raw), w, h);
     ctx.putImageData(img, 0, 0);
 
     return canvas;
   }
 
   private convertGLToBuffer(options?: ImageEncodeOptions): Buffer {
-    let canvas = this.convertGLToCanvas();
+    const canvas = this.convertGLToCanvas();
 
     // The rest of the code is shared with Canvas2D
     return NodeOffscreenCanvas.convertCanvasToBuffer(canvas, options);
   }
 
   public async convertToBlob(options?: ImageEncodeOptions): Promise<Blob> {
-    let buffer = await this.convertToBuffer(options);
+    const buffer = await this.convertToBuffer(options);
     return new Blob([buffer], { type: options ? options.type || MimeTypes.PNG : MimeTypes.PNG });
   }
 
@@ -121,21 +121,22 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
       throw new Error('Invalid contextId');
     }
 
-    let w = this.width;
-    let h = this.height;
-  
+    const w = this.width;
+    const h = this.height;
+
     let context: OffscreenRenderingContext;
     switch (contextId) {
-      case '2d':
+      case '2d': {
         let canvasContext = this.canvasContext;
         if (!canvasContext) {
-          let canvas = this.canvas = createCanvas(w, h);
+          const canvas = this.canvas = createCanvas(w, h);
           canvasContext = this.canvasContext = canvas.getContext('2d', options);
         }
         context = canvasContext as any;
         break;
-    
-      case 'webgl':
+      }
+
+      case 'webgl': {
         let glContext = this.glContext;
         if (!glContext) {
           glContext = this.glContext = createContext(w, h);
@@ -145,9 +146,11 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
         }
         context = glContext;
         break;
+      }
 
-      default:
+      default: {
         this.invalidContextId();
+      }
     }
 
     this.contextId = contextId;
@@ -158,17 +161,17 @@ export class NodeOffscreenCanvas implements OffscreenCanvas, IDisposable {
     throw new Error('Not Implemented');
   }
 
-  public addEventListener(type: string, listener: EventListenerOrEventListenerObject,
-      options?: boolean | EventListenerOptions): void {
+  public addEventListener(_type: string, _listener: EventListenerOrEventListenerObject,
+      _options?: boolean | EventListenerOptions): void {
 
   }
 
-  public dispatchEvent(event: Event): boolean {
+  public dispatchEvent(_event: Event): boolean {
     return true;
   }
 
-  public removeEventListener(type: string, listener: EventListenerOrEventListenerObject,
-      options?: boolean | EventListenerOptions): void {
+  public removeEventListener(_type: string, _listener: EventListenerOrEventListenerObject,
+      _options?: boolean | EventListenerOptions): void {
 
   }
 

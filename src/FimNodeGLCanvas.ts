@@ -34,7 +34,7 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @returns Buffer containing PNG data
    */
   public toPngBuffer(): Promise<Buffer> {
-    let canvas = this.getNodeCanvas();
+    const canvas = this.getNodeCanvas();
     return canvas.convertToBuffer({});
   }
 
@@ -43,7 +43,7 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @returns Array containing PNG data
    */
   public async toPng(): Promise<Uint8Array> {
-    let buffer = await this.toPngBuffer();
+    const buffer = await this.toPngBuffer();
     return new Uint8Array(buffer);
   }
 
@@ -53,8 +53,8 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @returns Buffer containing JPEG data
    */
   public toJpegBuffer(quality = 0.95): Promise<Buffer> {
-    let canvas = this.getNodeCanvas();
-    return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality: quality });
+    const canvas = this.getNodeCanvas();
+    return canvas.convertToBuffer({ type: MimeTypes.JPEG, quality });
   }
 
   /**
@@ -63,7 +63,7 @@ export class FimNodeGLCanvas extends FimGLCanvas {
    * @returns Array containing JPEG data
    */
   public async toJpeg(quality = 0.95): Promise<Uint8Array> {
-    let buffer = await this.toJpegBuffer(quality);
+    const buffer = await this.toJpegBuffer(quality);
     return new Uint8Array(buffer);
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@leosingleton/fim-node",
-  "version": "1.3.3-alpha",
+  "version": "1.3.4-alpha",
   "author": "Leo C. Singleton IV <leo@leosingleton.com>",
   "description": "Fast Image Manipulation Library for Node.js",
   "homepage": "https://github.com/leosingleton/fim-node",
@@ -11,36 +11,41 @@
     "url": "https://github.com/leosingleton/fim-node.git"
   },
   "devDependencies": {
-    "@leosingleton/fim": "^1.3.3-alpha",
-    "@types/get-stdin": "^7.0.0",
-    "@types/gl": "^4.1.0",
-    "@types/jasmine": "^3.5.0",
-    "@types/jest": "^24.0.24",
-    "@types/node": "^12.12.21",
-    "copy-webpack-plugin": "^5.1.1",
-    "get-stdin": "^7.0.0",
-    "glob": "^7.1.6",
-    "jasmine-core": "^3.5.0",
-    "jest": "^24.9.0",
-    "jest-junit": "^6.4.0",
-    "ts-jest": "^24.2.0",
-    "ts-loader": "^6.2.1",
+    "@leosingleton/fim": "^1.3.4-alpha",
+    "@types/gl": "latest",
+    "@types/jasmine": "latest",
+    "@types/jest": "latest",
+    "@types/node": "latest",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "copy-webpack-plugin": "latest",
+    "eslint": "latest",
+    "eslint-plugin-import": "latest",
+    "eslint-plugin-jsdoc": "latest",
+    "get-stdin": "latest",
+    "glob": "latest",
+    "jasmine-core": "latest",
+    "jest": "latest",
+    "jest-junit": "latest",
+    "ts-jest": "latest",
+    "ts-loader": "latest",
     "typescript": "3.5.3",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10",
-    "webpack-glsl-minify": "^1.1.2",
-    "webpack-node-externals": "^1.7.2"
+    "webpack": "latest",
+    "webpack-cli": "latest",
+    "webpack-glsl-minify": "latest",
+    "webpack-node-externals": "latest"
   },
   "dependencies": {
-    "@leosingleton/commonlibs": "^1.3.2-alpha",
-    "canvas": "^2.6.1",
-    "gl": "^4.4.0"
+    "@leosingleton/commonlibs": "latest",
+    "canvas": "latest",
+    "gl": "latest"
   },
   "peerDependencies": {
-    "@leosingleton/fim": "^1.3.3-alpha"
+    "@leosingleton/fim": "^1.3.4-alpha"
   },
   "scripts": {
     "build": "npx webpack --mode=none",
+    "lint": "npx eslint \"**/*.ts\" \"**/*.js\"",
     "test": "npx jest --config=jest.node.config.js --maxWorkers=2 --coverage",
     "test:xvfb": "xvfb-run -s \"-ac -screen 0 1280x1024x24\" npm run test",
     "samples": "cd samples && npx webpack --mode=none"

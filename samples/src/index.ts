@@ -12,7 +12,7 @@ import { buffer } from 'get-stdin';
 
 // The NodeJS 10 LTS doesn't yet have support for async at the root level. Wrap a main function instead.
 (async () => {
-  let code = await main(process.argv);
+  const code = await main(process.argv);
   process.exit(code);
 })().catch(err => {
   console.log(err);
@@ -20,7 +20,7 @@ import { buffer } from 'get-stdin';
 });
 
 /** Global instance of the FIM library */
-let fim = new FimNode();
+const fim = new FimNode();
 
 export async function main(argv: string[]): Promise<number> {
   if (argv.length < 5) {
@@ -28,9 +28,9 @@ export async function main(argv: string[]): Promise<number> {
     return -1;
   }
 
-  let op = argv[2];
-  let inFile = argv[3];
-  let outFile = argv[4];
+  const op = argv[2];
+  const inFile = argv[3];
+  const outFile = argv[4];
 
   let input: Buffer;
   if (inFile !== '--') {
@@ -39,7 +39,7 @@ export async function main(argv: string[]): Promise<number> {
     input = await buffer();
   }
 
-  let output = await processFile(op, input);
+  const output = await processFile(op, input);
 
   if (outFile !== '--') {
     writeFileSync(outFile, output);
@@ -63,7 +63,7 @@ function usage(): void {
 
 async function processFile(op: string, input: Buffer): Promise<Buffer> {
   // Parse the input JPEG file
-  let inputImage = await fim.createCanvasFromJpegAsync(new Uint8Array(input));
+  const inputImage = await fim.createCanvasFromJpegAsync(new Uint8Array(input));
 
   // Perform the requested operation
   let outputImage: FimNodeCanvas | FimNodeGLCanvas;
@@ -108,17 +108,17 @@ async function glFillOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanv
 }
 
 async function glGradientOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
-  let gl = fim.createGLCanvas(inputImage.w, inputImage.h);
-  let program = await GradientProgram.create(gl);
+  const gl = fim.createGLCanvas(inputImage.w, inputImage.h);
+  const program = await GradientProgram.create(gl);
   program.execute();
   return gl;
 }
 
 async function glBlurOperation(inputImage: FimNodeCanvas): Promise<FimNodeGLCanvas> {
-  let gl = fim.createGLCanvas(inputImage.w, inputImage.h);
-  let texture = gl.createTextureFrom(inputImage, FimGLTextureFlags.LinearSampling);
-  let program = new FimGLProgramMatrixOperation1DFast(gl, 13);
-  let kernel = GaussianKernel.calculate(2, 13);
+  const gl = fim.createGLCanvas(inputImage.w, inputImage.h);
+  const texture = gl.createTextureFrom(inputImage, FimGLTextureFlags.LinearSampling);
+  const program = new FimGLProgramMatrixOperation1DFast(gl, 13);
+  const kernel = GaussianKernel.calculate(2, 13);
   program.setInputs(texture, kernel);
   program.execute();
   return gl;
